@@ -85,9 +85,8 @@ class Dnsserver {
             let connection = await pool.getConnection();
             return await connection.queryStream(`SELECT * FROM block WHERE domain LIKE "${domain}"`).on(`data`, rows => {
                 console.log(rows);
-                return rows;
-            });
-
+                return rows | 0;
+            }); 
         } catch (error) {
             return console.error(error);
             /*} finally {
