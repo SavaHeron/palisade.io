@@ -39,5 +39,5 @@ app2.startapp();*/
 const dns1 = new Dnsserver(localip, 53,  externalresolver1);
 dns1.startserver();
 
-//const dns2 = new Server(localip, externalresolver2);
-//dns2.startserver();
+/*const dns2 = new Server(localip, 53, externalresolver2);
+dns2.startserver();*/
