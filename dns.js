@@ -83,7 +83,9 @@ class Dnsserver {
     async checkblock(domain) {
         try {
             let connection = await pool.getConnection();
-            let temp = await connection.query(`SELECT * FROM block WHERE domain LIKE "${domain}"`);
+            await connection.query(`SELECT * FROM block WHERE domain LIKE "${domain}"`, function (rows) {
+                console.log(rows)
+            });
             console.log(temp);
             return temp;
         } catch (error) {
@@ -120,7 +122,6 @@ class Dnsserver {
     };
 
     forwardquery(forwardedquestion, response, callback) {
-        console.log(`runn`);
         let forwardedrequest = dns.Request({
             question: forwardedquestion,
             server: this.upstreamresolver,
@@ -133,8 +134,6 @@ class Dnsserver {
             });
         });
 
-        console.log(`run`);
-
         forwardedrequest.on(`end`, callback);
 
         //this.insertcache(forwardedrequest);
@@ -143,7 +142,6 @@ class Dnsserver {
 
     handlequery(request, response) {
         let i = [];
-        console.log(`request`);
         /*fs.appendFile(`./logs/palisade.log`, `${request.type} query for ${request.question[0].name} from ${request.address.address}`, (error) => {
             throw error;
         });*/
