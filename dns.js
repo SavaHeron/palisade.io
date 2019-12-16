@@ -36,10 +36,10 @@ class Dnsserver {
             return await connection.query(`SELECT * FROM cache WHERE domain LIKE "${domain}"`) | 0;
         } catch (error) {
             return console.error(error);
-        /*} finally {
-            if (connection) {
-                return connection.end();
-            };*/
+            /*} finally {
+                if (connection) {
+                    return connection.end();
+                };*/
         };
     };
 
@@ -50,10 +50,10 @@ class Dnsserver {
             return await connection.query(`UPDATE cache SET json = ${record}, retrieved = ${date}`) | 0;
         } catch (error) {
             return console.error(error);
-        /*} finally {
-            if (connection) {
-                return connection.end();
-            };*/
+            /*} finally {
+                if (connection) {
+                    return connection.end();
+                };*/
         };
     };
 
@@ -86,10 +86,10 @@ class Dnsserver {
             return await connection.query(`SELECT * FROM block WHERE domain LIKE "${domain}"`) | 0;
         } catch (error) {
             return console.error(error);
-        /*} finally {
-            if (connection) {
-                return connection.end();
-            };*/
+            /*} finally {
+                if (connection) {
+                    return connection.end();
+                };*/
         };
     };
 
@@ -109,7 +109,7 @@ class Dnsserver {
     checkinsertblock(domain) {
         if (this.checkblock(domain)) {
             return 1;
-        } else if (/*check if should be blocked*/1 == 1) {
+        } else if (/*check if should be blocked*/false) {
             this.insertblock(domain);
             return 1;
         } else {
@@ -118,7 +118,7 @@ class Dnsserver {
     };
 
     forwardquery(forwardedquestion, response, callback) {
-	console.log(`runn`);
+        console.log(`runn`);
         let forwardedrequest = dns.Request({
             question: forwardedquestion,
             server: this.upstreamresolver,
@@ -131,45 +131,42 @@ class Dnsserver {
             });
         });
 
-	console.log(`run`);
+        console.log(`run`);
 
         forwardedrequest.on(`end`, callback);
 
         //this.insertcache(forwardedrequest);
-	console.log(forwardedrequest);
-	console.log(`test12`);
         return forwardedrequest.send();
     };
 
     handlequery(request, response) {
         let i = [];
-        let domain = request.question[0].name;
-	console.log(`request`);
-        /*fs.appendFile(`./logs/palisade.log`, `${request.type} query for ${request.question[0].name} from ${request.address.address}`, (error) => {
+        console.log(`request`);
+        fs.appendFile(`./logs/palisade.log`, `${request.type} query for ${request.question[0].name} from ${request.address.address}`, (error) => {
             throw error;
-        });*/
-        /*if (this.checkinsertblock(domain)) { //executed if the domain should be blocked
-            return request.question.forEach(() => {
-                return response.answer.push(dns.A({
-                    name: request.question[0].name,
-                    address: `0.0.0.0`,
-                    ttl: 1800
-                }));
-            });
-
-        //} else if (this.checktable(`cache`, `domain`, domain)) {   //if the dns server has already cached the domain's ip
-
-        //} else if (this.checktable(`authority`, `domain`, domain)) {   //if is to block the domain
-
-        } else {*/
-	    request.question.forEach(question => {
-	            i.push(callback => {
-			console.log(`callio`);
-               		 return this.forwardquery(question, response, callback);
-           	 });
         });
-        return async.parallel(i, () => {
-            return response.send();
+        request.question.forEach(question => {
+            if (this.checkinsertblock(domain)) { //executed if the domain should be blocked
+                return request.question.forEach(() => {
+                    return response.answer.push(dns.A({
+                        name: request.question[0].name,
+                        address: `0.0.0.0`,
+                        ttl: 1800
+                    }));
+                });
+
+                //} else if (this.checktable(`cache`, `domain`, domain)) {   //if the dns server has already cached the domain's ip
+
+                //} else if (this.checktable(`authority`, `domain`, domain)) {   //if is to block the domain
+
+            } else {
+                i.push(callback => {
+                    return this.forwardquery(question, response, callback);
+                });
+            };
+            return async.parallel(i, () => {
+                return response.send();
+            });
         });
     };
 
