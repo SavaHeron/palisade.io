@@ -83,9 +83,11 @@ class Dnsserver {
     async checkblock(domain) {
         try {
             let connection = await pool.getConnection();
-            let temp = await connection.query(`SELECT * FROM block WHERE domain LIKE "${domain}"`);
-            console.log(temp);
-            return temp;
+            return await connection.query(`SELECT * FROM block WHERE domain LIKE "${domain}" as val`).on(`data`, rows => {
+                console.log(rows);
+                return rows;
+            });
+
         } catch (error) {
             return console.error(error);
             /*} finally {
