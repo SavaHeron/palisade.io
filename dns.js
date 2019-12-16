@@ -12,13 +12,14 @@ Licence:	CC BY-NC-ND 4.0
 const async = require(`async`);
 const dns = require(`native-dns`);
 const fs = require(`fs`);
-//const mariadb = require(`mariadb`);
-/*const pool = mariadb.createPool({
-    host: "",
-    user: "",
-    password: "",
-    connectionLimit: x
-});*/
+const mariadb = require(`mariadb`);
+const pool = mariadb.createPool({
+    host: "localhost",
+    user: "root",
+    password: "9a_?KedofR-qewo",
+    connectionLimit: 5,
+    database: "palisadeio"
+});
 
 const udpserver = dns.createUDPServer();
 
@@ -31,28 +32,28 @@ class Dnsserver {
 
     async checkcache(domain) {
         try {
-            let connection = pool.getConnection();
-            return await connection.query(`SELECT * FROM cache WHERE domain LIKE "${domain}"`);
+            let connection = await pool.getConnection();
+            return await connection.query(`SELECT * FROM cache WHERE domain LIKE "${domain}"`) | 0;
         } catch (error) {
             return console.error(error);
-        } finally {
+        /*} finally {
             if (connection) {
                 return connection.end();
-            };
+            };*/
         };
     };
 
     async updatecache(record, date) {
         let date = new Date();
         try {
-            let connection = pool.getConnection();
-            return await connection.query(`UPDATE cache SET json = ${record}, retrieved = ${date}`);
+            let connection = await pool.getConnection();
+            return await connection.query(`UPDATE cache SET json = ${record}, retrieved = ${date}`) | 0;
         } catch (error) {
             return console.error(error);
-        } finally {
+        /*} finally {
             if (connection) {
                 return connection.end();
-            };
+            };*/
         };
     };
 
@@ -60,8 +61,8 @@ class Dnsserver {
         let domain = record.question[0].name;
         let date = new Date();
         try {
-            let connection = pool.getConnection();
-            return await connection.query(`INSERT INTO cache (domain, json, retreived) VALUES (${domain}, ${record}, ${date})`);
+            let connection = await pool.getConnection();
+            return await connection.query(`INSERT INTO cache (domain, json, retreived) VALUES (${domain}, ${record}, ${date})`) | 0;
         } catch (error) {
             return console.error(error);
         } finally {
@@ -81,21 +82,21 @@ class Dnsserver {
 
     async checkblock(domain) {
         try {
-            let connection = pool.getConnection();
-            return await connection.query(`SELECT * FROM block WHERE domain LIKE "${domain}"`);
+            let connection = await pool.getConnection();
+            return await connection.query(`SELECT * FROM block WHERE domain LIKE "${domain}"`) | 0;
         } catch (error) {
             return console.error(error);
-        } finally {
+        /*} finally {
             if (connection) {
                 return connection.end();
-            };
+            };*/
         };
     };
 
     async insertblock(domain) {
         try {
-            let connection = pool.getConnection();
-            return await connection.query(`INSERT INTO block (domain) VALUES (${domain})`);
+            let connection = await pool.getConnection();
+            return await connection.query(`INSERT INTO block (domain) VALUES (${domain})`) | 0;
         } catch (error) {
             return console.error(error);
         } finally {
@@ -108,7 +109,7 @@ class Dnsserver {
     checkinsertblock(domain) {
         if (this.checkblock(domain)) {
             return 1;
-        } else if (/*check if should be blocked*/1 = 1) {
+        } else if (/*check if should be blocked*/1 == 1) {
             this.insertblock(domain);
             return 1;
         } else {
@@ -117,6 +118,7 @@ class Dnsserver {
     };
 
     forwardquery(forwardedquestion, response, callback) {
+	console.log(`runn`);
         let forwardedrequest = dns.Request({
             question: forwardedquestion,
             server: this.upstreamresolver,
@@ -129,20 +131,24 @@ class Dnsserver {
             });
         });
 
+	console.log(`run`);
+
         forwardedrequest.on(`end`, callback);
 
-        this.insertcache(forwardedrequest);
-
+        //this.insertcache(forwardedrequest);
+	console.log(forwardedrequest);
+	console.log(`test12`);
         return forwardedrequest.send();
     };
 
     handlequery(request, response) {
         let i = [];
         let domain = request.question[0].name;
-        fs.appendFile(`./logs/palisade.log`, `${request.type} query for ${request.question[0].name} from ${request.address.address}`, (error) => {
+	console.log(`request`);
+        /*fs.appendFile(`./logs/palisade.log`, `${request.type} query for ${request.question[0].name} from ${request.address.address}`, (error) => {
             throw error;
-        });
-        if (this.checkinsertblock(domain)) { //executed if the domain should be blocked
+        });*/
+        /*if (this.checkinsertblock(domain)) { //executed if the domain should be blocked
             return request.question.forEach(() => {
                 return response.answer.push(dns.A({
                     name: request.question[0].name,
@@ -151,15 +157,17 @@ class Dnsserver {
                 }));
             });
 
-        } else if (this.checktable(`cache`, `domain`, domain)) {   //if the dns server has already cached the domain's ip
+        //} else if (this.checktable(`cache`, `domain`, domain)) {   //if the dns server has already cached the domain's ip
 
-        } else if (this.checktable(`authority`, `domain`, domain)) {   //if is to block the domain
+        //} else if (this.checktable(`authority`, `domain`, domain)) {   //if is to block the domain
 
-        } else {
-            return i.push(callback => {
-                return this.forwardquery(question, response, callback);
-            });
-        };
+        } else {*/
+	    request.question.forEach(question => {
+	            i.push(callback => {
+			console.log(`callio`);
+               		 return this.forwardquery(question, response, callback);
+           	 });
+        });
         return async.parallel(i, () => {
             return response.send();
         });
@@ -185,4 +193,5 @@ class Dnsserver {
     };
 };
 
-export class Dnsserver { }
+module.exports = Dnsserver;
+
