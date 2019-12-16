@@ -11,7 +11,7 @@ Licence:	CC BY-NC-ND 4.0
 
 const async = require(`async`);
 const dns = require(`native-dns`);
-const fs = require(`fs`);
+//const fs = require(`fs`);
 const mariadb = require(`mariadb`);
 const pool = mariadb.createPool({
     host: "localhost",
@@ -142,9 +142,9 @@ class Dnsserver {
     handlequery(request, response) {
         let i = [];
         console.log(`request`);
-        fs.appendFile(`./logs/palisade.log`, `${request.type} query for ${request.question[0].name} from ${request.address.address}`, (error) => {
+        /*fs.appendFile(`./logs/palisade.log`, `${request.type} query for ${request.question[0].name} from ${request.address.address}`, (error) => {
             throw error;
-        });
+        });*/
         request.question.forEach(question => {
             if (this.checkinsertblock(request.question[0].name)) { //executed if the domain should be blocked
                 return request.question.forEach(() => {
