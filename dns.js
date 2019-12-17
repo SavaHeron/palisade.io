@@ -85,7 +85,8 @@ class Dnsserver {
             let connection = await pool.getConnection();
             await connection.queryStream(`SELECT * FROM block WHERE domain LIKE "${domain}"`).on(`data`, rows => {
                 console.log(rows);
-                return rows | 0;
+                console.log(`rows`);
+                return rows;
             }); 
         } catch (error) {
             return console.error(error);
@@ -110,7 +111,7 @@ class Dnsserver {
     };
 
     checkinsertblock(domain) {
-        if (this.checkblock(domain) != 0) {
+        if (this.checkblock(domain)) {
             console.log(`block`);
             return 1;
         } else if (/*check if should be blocked*/false) {
