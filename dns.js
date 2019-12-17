@@ -111,6 +111,7 @@ class Dnsserver {
 
     checkinsertblock(domain) {
         if (this.checkblock(domain)) {
+            console.log(`block`);
             return 1;
         } else if (/*check if should be blocked*/false) {
             this.insertblock(domain);
