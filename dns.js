@@ -110,7 +110,7 @@ class Dnsserver {
     async checkinsertblock(domain) {
         let block = await this.checkblock(domain);
         console.log(typeof block);
-        if (typeof block != undefined) {
+        if (typeof block != `undefined`) {
             console.log(`block`);
             return 1;
         } else if (/*check if should be blocked*/false) {
