@@ -116,6 +116,7 @@ class Dnsserver {
             this.insertblock(domain);
             return 1;
         } else {
+            console.log(`else`);
             return 0;
         };
     };
@@ -145,8 +146,9 @@ class Dnsserver {
             throw error;
         });*/
         request.question.forEach(question => {
-            if (this.checkinsertblock(request.question[0].name) === 1) { //executed if the domain should be blocked
-                return request.question.forEach(() => {
+            if (this.checkinsertblock(request.question[0].name) == 1) { //executed if the domain should be blocked
+                console.log(`block`)
+                request.question.forEach(() => {
                     return response.answer.push(dns.A({
                         name: request.question[0].name,
                         address: `0.0.0.0`,
