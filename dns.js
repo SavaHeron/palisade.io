@@ -146,7 +146,8 @@ class Dnsserver {
             throw error;
         });*/
         request.question.forEach(question => {
-            if (await this.checkinsertblock(request.question[0].name) == 1) { //executed if the domain should be blocked
+            let block = await this.checkinsertblock(request.question[0].name);
+            if (block == 1) { //executed if the domain should be blocked
                 console.log(`block2`)
                 request.question.forEach(() => {
                     return response.answer.push(dns.A({
