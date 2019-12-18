@@ -83,9 +83,8 @@ class Dnsserver {
     async checkblock(domain) {
         try {
             let connection = await pool.getConnection();
-            let temp = await connection.query(`SELECT * FROM block WHERE domain LIKE "${domain}"`);
-            console.log(temp[0]);
-            return temp[0];
+            let rows = await connection.query(`SELECT * FROM block WHERE domain LIKE "${domain}"`);
+            return rows[0];
         } catch (error) {
             return console.error(error);
             /*} finally {
@@ -110,7 +109,7 @@ class Dnsserver {
 
     async checkinsertblock(domain) {
         let block = await this.checkblock(domain);
-        console.log(block);
+        console.log(JSON.stringify(block));
         if (typeof block != undefined) {
             console.log(`block`);
             return 1;
