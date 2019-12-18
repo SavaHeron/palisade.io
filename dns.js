@@ -182,9 +182,9 @@ class Dnsserver {
             return this.handlequery(request, response);
         });
         udpserver.on(`error`, (error, _message, _response) => {
-            fs.appendFile(`./logs/error.log`, error.stack, (error) => {
+            /*fs.appendFile(`./logs/error.log`, error.stack, (error) => {
                 throw error;
-            });
+            });*/
             return console.log(error.stack);
         });
     };
