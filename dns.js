@@ -17,7 +17,7 @@ const pool = mariadb.createPool({
     host: "localhost",
     user: "root",
     password: "9a_?KedofR-qewo",
-    connectionLimit: 5,
+    connectionLimit: 50,
     database: "palisadeio"
 });
 
@@ -109,7 +109,8 @@ class Dnsserver {
     };
 
     checkinsertblock(domain) {
-        if (this.checkblock(domain)[0][0]) {
+        console.log(this.checkblock(domain));
+        if (this.checkblock(domain) != undefined) {
             console.log(`block`);
             return 1;
         } else if (/*check if should be blocked*/false) {
@@ -145,7 +146,7 @@ class Dnsserver {
             throw error;
         });*/
         request.question.forEach(question => {
-            if (this.checkinsertblock(request.question[0].name)) { //executed if the domain should be blocked
+            if (/*this.checkinsertblock(request.question[0].name)*/ false) { //executed if the domain should be blocked
                 return request.question.forEach(() => {
                     return response.answer.push(dns.A({
                         name: request.question[0].name,
