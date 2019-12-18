@@ -140,14 +140,14 @@ class Dnsserver {
         return forwardedrequest.send();
     };
 
-    handlequery(request, response) {
+    async handlequery(request, response) {
         let i = [];
         /*fs.appendFile(`./logs/palisade.log`, `${request.type} query for ${request.question[0].name} from ${request.address.address}`, (error) => {
             throw error;
         });*/
         request.question.forEach(question => {
-            if (this.checkinsertblock(request.question[0].name) == 1) { //executed if the domain should be blocked
-                console.log(`block`)
+            if (await this.checkinsertblock(request.question[0].name) == 1) { //executed if the domain should be blocked
+                console.log(`block2`)
                 request.question.forEach(() => {
                     return response.answer.push(dns.A({
                         name: request.question[0].name,
