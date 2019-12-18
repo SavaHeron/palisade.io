@@ -109,7 +109,7 @@ class Dnsserver {
 
     async checkinsertblock(domain) {
         let block = await this.checkblock(domain);
-        console.log(JSON.stringify(block));
+        console.log(typeof block);
         if (typeof block != undefined) {
             console.log(`block`);
             return 1;
