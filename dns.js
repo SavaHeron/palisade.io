@@ -168,11 +168,11 @@ class Dnsserver {
                     return this.forwardquery(question, response, callback);
                 });
             };
+            
 
             return async.parallel(i, () => {
                 if (block != 1) {
-                    console.log(response);
-                    return this.insertcache(JSON.stringify(request.question[0].name, response));
+                    return this.insertcache(request.question[0].name, JSON.stringify(response));
                 };
                 return response.send();
             });
