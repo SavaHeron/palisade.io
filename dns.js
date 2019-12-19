@@ -174,8 +174,9 @@ class Dnsserver {
 
             return async.parallel(i, () => {
                 if (block != 1) {
-                    console.log(response)
-                    return this.insertcache(response)
+                    console.log(response);
+                    let cache = await this.insertcache(response);
+                    return cache;
                 };
                 return response.send();
             });
