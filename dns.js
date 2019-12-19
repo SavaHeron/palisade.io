@@ -57,14 +57,13 @@ class Dnsserver {
         };
     };
 
-    async insertcache(response) {
-        console.log(reponse);
-        let domain = response.question[0].name;
+    async insertcache(domain, response) {
+        let record = JSON.stringify(response);
         let date = new Date();
         console.log(date);
         try {
             let connection = await pool.getConnection();
-            let record = JSON.stringify(response);
+
             let rows = await connection.query(`INSERT INTO cache (domain, json, retreived) VALUES (${domain}, ${record}, ${date})`);
             console.log(rows);
             return rows;
@@ -92,10 +91,10 @@ class Dnsserver {
             return rows[0];
         } catch (error) {
             return console.error(error);
-            /*} finally {
-                if (connection) {
-                    return connection.end();
-                };*/
+        } finally {
+            if (connection) {
+                return connection.end();
+            };
         };
     };
 
