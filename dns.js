@@ -141,12 +141,11 @@ class Dnsserver {
 
     async handlequery(request, response) {
         let i = [];
-        
+        let block = await this.checkinsertblock(request.question[0].name);
         fs.appendFile(`./logs/palisade.log`, `${request.type} query for ${request.question[0].name} from ${request.address.address}`, (error) => {
             if (error) throw error;
         });
         request.question.forEach(question => {
-            let block = await this.checkinsertblock(question.name);
             if (block == 1) { //executed if the domain should be blocked
                 request.question.forEach(() => {    //answers the query with 0.0.0.0
                     return response.answer.push(dns.A({
