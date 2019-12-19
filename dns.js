@@ -170,7 +170,7 @@ class Dnsserver {
             return async.parallel(i, () => {
                 if (block != 1) {
                     console.log(`not block`)
-                    return this.insertcache(request.question[0].name, JSON.stringify(response));
+                    return this.insertcache(request.question[0].name, response);
                 };
                 return response.send();
             });
@@ -203,4 +203,3 @@ class Dnsserver {
 };
 
 module.exports = Dnsserver;
-
