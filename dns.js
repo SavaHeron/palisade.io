@@ -63,6 +63,7 @@ class Dnsserver {
         console.log(date);
         try {
             let connection = await pool.getConnection();
+            console.log(record);
             let rows = await connection.query(`INSERT INTO cache (domain, json, retreived) VALUES (${domain}, ${record}, ${date})`);
             console.log(rows);
             return rows;
