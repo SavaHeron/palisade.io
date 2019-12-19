@@ -170,10 +170,13 @@ class Dnsserver {
                 i.push(callback => {
                     return this.forwardquery(question, response, callback);
                 });
-                console.log(i);
             };
 
             return async.parallel(i, () => {
+                if (block != 1) {
+                    console.log(response)
+                    return this.insertcache(response)
+                };
                 return response.send();
             });
         });
