@@ -59,11 +59,9 @@ class Dnsserver {
 
     async insertcache(domain, response) {
         try {
-            let record = JSON.stringify(response);
             let date = new Date();
             let connection = await pool.getConnection();
-            console.log(`record: ${record}`);
-            let rows = await connection.query(`INSERT INTO cache (domain, json, retreived) VALUES (${domain}, '${record}', ${date})`);
+            let rows = await connection.query(`INSERT INTO cache (domain, json, retreived) VALUES (${domain}, "${response}", ${date})`);
             console.log(rows);
             return rows;
         } catch (error) {
