@@ -60,15 +60,18 @@ class Dnsserver {
     async insertcache(record) {
         let domain = record.question[0].name;
         let date = new Date();
+        console.log(date);
         try {
             let connection = await pool.getConnection();
-            return await connection.query(`INSERT INTO cache (domain, json, retreived) VALUES (${domain}, ${record}, ${date})`) | 0;
+            let rows = await connection.query(`INSERT INTO cache (domain, json, retreived) VALUES (${domain}, ${record}, ${date})`);
+            console.log(rows);
+            return rows;
         } catch (error) {
             return console.error(error);
-        } finally {
-            if (connection) {
-                connection.end();
-            };
+            /*} finally {
+                if (connection) {
+                    connection.end();
+                };*/
         };
     };
 
@@ -134,7 +137,7 @@ class Dnsserver {
 
         forwardedrequest.on(`end`, callback);
 
-        //this.insertcache(forwardedrequest);
+        this.insertcache(forwardedrequest);
 
         return forwardedrequest.send();
     };
@@ -193,7 +196,7 @@ class Dnsserver {
                 if (error) throw error;
             });
 
-            return console.log(error.stack);
+            return console.error(error.stack);
         });
     };
 };
