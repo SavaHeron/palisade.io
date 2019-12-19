@@ -138,8 +138,8 @@ class Dnsserver {
 
         forwardedrequest.on(`end`, callback);
 
-        this.insertcache(forwardedrequest);
-        console.log(`cache`);
+        //this.insertcache(forwardedrequest);
+        //console.log(`cache`);
 
         return forwardedrequest.send();
     };
@@ -173,6 +173,7 @@ class Dnsserver {
             };
 
             return async.parallel(i, () => {
+                console.log(response);
                 return response.send();
             });
         });
