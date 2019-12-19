@@ -142,12 +142,14 @@ class Dnsserver {
     async handlequery(request, response) {
         let i = [];
         let block = await this.checkinsertblock(request.question[0].name);
-        fs.appendFile(`./logs/palisade.log`, `${request.type} query for ${request.question[0].name} from ${request.address.address}`, (error) => {
+
+        fs.appendFile(`./logs/palisade.log`, `${request.type} query for ${request.question[0].name} from ${request.address.address}\n`, (error) => {
             if (error) throw error;
         });
+
         request.question.forEach(question => {
             if (block == 1) { //executed if the domain should be blocked
-                request.question.forEach(() => {    //answers the query with 0.0.0.0
+                return request.question.forEach(() => {    //answers the query with 0.0.0.0
                     return response.answer.push(dns.A({
                         name: request.question[0].name,
                         address: `0.0.0.0`,
@@ -164,6 +166,7 @@ class Dnsserver {
                     return this.forwardquery(question, response, callback);
                 });
             };
+
             return async.parallel(i, () => {
                 return response.send();
             });
@@ -172,19 +175,24 @@ class Dnsserver {
 
     startserver() {
         udpserver.serve(this.serverport, this.serverip);
+
         udpserver.on(`listening`, () => {
             return console.log(`listening on ${this.serverip}:${this.serverport}`);
         });
+
         udpserver.on(`close`, () => {
             return console.log(`closed`);
         });
+
         udpserver.on(`request`, (request, response) => {
             return this.handlequery(request, response);
         });
+
         udpserver.on(`error`, (error, _message, _response) => {
-            fs.appendFile(`logs/error.log`, error.stack, (error) => {
+            fs.appendFile(`./logs/error.log`, `${error.stack}\n`, (error) => {
                 if (error) throw error;
             });
+
             return console.log(error.stack);
         });
     };
