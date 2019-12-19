@@ -58,6 +58,7 @@ class Dnsserver {
     };
 
     async insertcache(record) {
+        console.log(record);
         let domain = record.question[0].name;
         let date = new Date();
         console.log(date);
@@ -153,6 +154,7 @@ class Dnsserver {
 
         request.question.forEach(question => {
             if (block == 1) { //executed if the domain should be blocked
+                console.log(`block`);
                 return request.question.forEach(() => {    //answers the query with 0.0.0.0
                     return response.answer.push(dns.A({
                         name: request.question[0].name,
