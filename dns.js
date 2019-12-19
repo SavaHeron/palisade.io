@@ -63,7 +63,6 @@ class Dnsserver {
         console.log(date);
         try {
             let connection = await pool.getConnection();
-
             let rows = await connection.query(`INSERT INTO cache (domain, json, retreived) VALUES (${domain}, ${record}, ${date})`);
             console.log(rows);
             return rows;
@@ -88,13 +87,10 @@ class Dnsserver {
         try {
             let connection = await pool.getConnection();
             let rows = await connection.query(`SELECT * FROM block WHERE domain LIKE "${domain}"`);
+            connection.end();
             return rows[0];
         } catch (error) {
             return console.error(error);
-        } finally {
-            if (connection) {
-                return connection.end();
-            };
         };
     };
 
