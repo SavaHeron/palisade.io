@@ -59,11 +59,10 @@ class Dnsserver {
 
     async insertcache(domain, response) {
         let date = new Date();
-        console.log(date);
         try {
             let connection = await pool.getConnection();
             let record = JSON.stringify(response);
-            console.log(record);
+            console.log(`record: ${record}`);
             let rows = await connection.query(`INSERT INTO cache (domain, json, retreived) VALUES (${domain}, ${record}, ${date})`);
             console.log(rows);
             return rows;
@@ -171,9 +170,10 @@ class Dnsserver {
 
 
             return async.parallel(i, () => {
-                /*if (block != 1) {
-                    return this.insertcache(request.question[0].name, JSON.stringify(response));
-                };*/
+                if (block != 1) {
+                    console.log(`not block`)
+                    //return this.insertcache(request.question[0].name, JSON.stringify(response));
+                };
                 return response.send();
             });
         });
