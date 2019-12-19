@@ -168,9 +168,9 @@ class Dnsserver {
 
             } else {
                 i.push(callback => {
-                    this.forwardquery(question, response, callback);
-                    return console.log(response);
+                    return this.forwardquery(question, response, callback);
                 });
+                console.log(i);
             };
 
             return async.parallel(i, () => {
