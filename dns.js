@@ -138,6 +138,7 @@ class Dnsserver {
         forwardedrequest.on(`end`, callback);
 
         this.insertcache(forwardedrequest);
+        console.log(`cache`);
 
         return forwardedrequest.send();
     };
