@@ -135,7 +135,7 @@ class Dnsserver {
         forwardedrequest.on(`end`, callback);
 
         //this.insertcache(forwardedrequest);
-        
+
         return forwardedrequest.send();
     };
 
@@ -143,7 +143,7 @@ class Dnsserver {
         let i = [];
         let block = await this.checkinsertblock(request.question[0].name);
         fs.appendFile(`./logs/palisade.log`, `${request.type} query for ${request.question[0].name} from ${request.address.address}`, (error) => {
-            throw error;
+            if (error) throw error;
         });
         request.question.forEach(question => {
             if (block == 1) { //executed if the domain should be blocked
@@ -183,7 +183,7 @@ class Dnsserver {
         });
         udpserver.on(`error`, (error, _message, _response) => {
             fs.appendFile(`logs/error.log`, error.stack, (error) => {
-                throw error;
+                if (error) throw error;
             });
             return console.log(error.stack);
         });
