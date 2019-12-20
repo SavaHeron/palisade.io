@@ -17,7 +17,7 @@ const pool = mariadb.createPool({
     host: "localhost",
     user: "root",
     password: "9a_?KedofR-qewo",
-    connectionLimit: 50,
+    connectionLimit: 5,
     database: "palisadeio"
 });
 
@@ -33,7 +33,10 @@ class Dnsserver {
     async checkcache(domain) {
         try {
             let connection = await pool.getConnection();
-            return await connection.query(`SELECT * FROM cache WHERE domain LIKE "${domain}"`) | 0;
+            let rows = await connection.query(`SELECT * FROM cache WHERE domain LIKE "${domain}"`);
+            console.log(rows);
+            connection.end();
+            return rows;
         } catch (error) {
             return console.error(error);
             /*} finally {
@@ -47,7 +50,7 @@ class Dnsserver {
         let date = new Date();
         try {
             let connection = await pool.getConnection();
-            return await connection.query(`UPDATE cache SET json = ${record}, retrieved = ${date}`) | 0;
+            return await connection.query(`UPDATE cache SET json = ${record}, retrieved = ${date}`);
         } catch (error) {
             return console.error(error);
             /*} finally {
@@ -57,31 +60,26 @@ class Dnsserver {
         };
     };
 
-    async insertcache(domain, response) {
+    async insertcache(domain, response) {   //finished
         try {
-            //let date = new Date();
             let connection = await pool.getConnection();
             let rows = await connection.query(`INSERT INTO cache (domain, record) VALUES ("${domain}", "${response}")`);
-            console.log(rows);
+            connection.end();
             return rows;
         } catch (error) {
             return console.error(error);
-            /*} finally {
-                if (connection) {
-                    connection.end();
-                };*/
         };
     };
 
-    updateinsertcache(record) {
+    updateinsertcache(domain, response) {
         if (this.checkcache(domain)) {
-            return this.updatecache(record)
+            return this.updatecache(response)
         } else {
-            return this.insertcache(record);
+            return this.insertcache(response);
         };
     };
 
-    async checkblock(domain) {
+    async checkblock(domain) {  //finished 
         try {
             let connection = await pool.getConnection();
             let rows = await connection.query(`SELECT * FROM block WHERE domain LIKE "${domain}"`);
@@ -169,8 +167,7 @@ class Dnsserver {
 
             return async.parallel(i, () => {
                 if (block != 1) {
-                    console.log(`not block`)
-                    return this.insertcache(request.question[0].name, response);
+                    this.insertcache(request.question[0].name, response);
                 };
                 return response.send();
             });
