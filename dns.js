@@ -34,7 +34,7 @@ class Dnsserver {
         try {
             let connection = await pool.getConnection();
             let rows = await connection.query(`SELECT * FROM cache WHERE domain LIKE "${domain}"`);
-            console.log(rows);
+            console.log(JSON.parse(rows[0]));
             connection.end();
             return rows;
         } catch (error) {
@@ -63,7 +63,7 @@ class Dnsserver {
     async insertcache(domain, response) {   //finished
         try {
             let connection = await pool.getConnection();
-            let rows = await connection.query(`INSERT INTO cache (domain, record) VALUES ("${domain}", "${response}")`);
+            let rows = await connection.query(`INSERT INTO cache (domain, record) VALUES ("${domain}", "${JSON.stringify(response)}")`);
             connection.end();
             return rows;
         } catch (error) {
