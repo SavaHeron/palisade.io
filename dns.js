@@ -155,14 +155,16 @@ class Dnsserver {
             } else if (typeof cache != `undefined`) {   //if the dns server has already cached the domain's ip
                 console.log(cache);
 
-
-                request.question.forEach(() => {
+                i.push(callback => {
+                    return this.forwardquery(question, response, callback);
+                });
+                /*request.question.forEach(() => {
                     return response.answer.push(dns.A({
                         name: request.question[0].name,
                         address: `1.2.3.4`,
                         ttl: 1800
                     }));
-                });
+                });*/
 
                 //} else if (this.checktable(`authority`, `domain`, domain)) {   //if is to block the domain
 
