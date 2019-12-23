@@ -74,12 +74,12 @@ class Dnsserver {
         };
     };
 
-    async updateinsertcache(domain, response, type) {
+    async updateinsertcache(domain, type) {
         let cache = await this.checkcache(domain, type);
-        if (typeof cache != `undefined` && false) {
-            return this.updatecache(response);
+        if (typeof cache != `undefined`) {
+            return 1
         } else {
-            await this.insertcache(domain, response, type);
+            return 0
         };
     };
 
@@ -141,7 +141,6 @@ class Dnsserver {
         let block = await this.checkinsertblock(request.question[0].name);
         let querytype = request.question[0].type;
         let cache = await this.checkcache(request.question[0].name, querytype);
-        console.log(cache);
 
         fs.appendFile(`./logs/palisade.log`, `${request.type} query for ${request.question[0].name} from ${request.address.address}\n`, (error) => {
             if (error) throw error;
@@ -159,19 +158,22 @@ class Dnsserver {
 
             } else if (typeof cache != `undefined`) {   //if the dns server has already cached the domain's ip
                 console.log(cache.retrieved);
-
-                /*if (false) {
-                    /*request.question.forEach(() => {
-                    return response.answer.push(dns.A({
-                        name: request.question[0].name,
-                        address: `1.2.3.4`,
-                        ttl: 1800
-                    }));
-                });
+                if (currennt) {
+                    var valid = 1
+                    request.question.forEach(() => {
+                        return response.answer.push(cache[1]);
+                    });
                 } else {
+                    var valid = 0
                     i.push(callback => {
                         return this.forwardquery(question, response, callback);
                     });
+                };
+                /*
+
+
+                } else {
+                    
                 };*/
 
                 //} else if (this.checktable(`authority`, `domain`, domain)) {   //if is to block the domain
@@ -183,7 +185,7 @@ class Dnsserver {
             };
 
             return async.parallel(i, () => {
-                if (block != 1 /*&& typeof cache != `undefined`*/) {
+                if (block != 1 && valid != 1) {
                     this.updateinsertcache(request.question[0].name, response, querytype);
                 };
                 return response.send();
