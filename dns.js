@@ -66,10 +66,9 @@ class Dnsserver {
             let record = [];
             record.push(response.question);
             record.push(response.answer);
-            console.log(JSON.stringify(JSON.stringify(record)));
-            //let rows = await connection.query(`INSERT INTO cache (domain, record) VALUES ("${domain}", ${JSON.stringify(JSON.stringify(record))})`);
+            let rows = await connection.query(`INSERT INTO cache (domain, record) VALUES ("${domain}", ${JSON.stringify(JSON.stringify(record))})`);
             connection.end();
-            //return rows;
+            return rows;
         } catch (error) {
             return console.error(error);
         };
@@ -80,7 +79,7 @@ class Dnsserver {
         if (typeof cache != `undefined` && false) {
             return this.updatecache(response);
         } else {
-            return this.insertcache(domain, response);
+            return console.log(this.insertcache(domain, response));
         };
     };
 
