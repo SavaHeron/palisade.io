@@ -38,10 +38,10 @@ class Dnsserver {
         };
     };
 
-    async checkcache(domain) {  //finished
+    async checkcache(domain, type) {  //finished
         try {
             let connection = await pool.getConnection();
-            let rows = await connection.query(`SELECT * FROM cache WHERE domain LIKE "${domain}"`);
+            let rows = await connection.query(`SELECT * FROM cache WHERE domain LIKE "${domain}" AND type LIKE ${type}`);
             connection.end();
             return rows[0];
         } catch (error) {
@@ -75,7 +75,7 @@ class Dnsserver {
     };
 
     async updateinsertcache(domain, response, type) {
-        let cache = await this.checkcache(domain);
+        let cache = await this.checkcache(domain, type);
         if (typeof cache != `undefined` && false) {
             return this.updatecache(response);
         } else {
@@ -141,7 +141,7 @@ class Dnsserver {
         let block = await this.checkinsertblock(request.question[0].name);
         let querytype = request.question[0].type;
         let cache = await this.checkcache(request.question[0].name, querytype);
-        
+        console.log(cache);
 
         fs.appendFile(`./logs/palisade.log`, `${request.type} query for ${request.question[0].name} from ${request.address.address}\n`, (error) => {
             if (error) throw error;
