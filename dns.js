@@ -137,7 +137,6 @@ class Dnsserver {
         let i = [];
         let block = await this.checkinsertblock(request.question[0].name);
         let cache = await this.checkcache(request.question[0].name);
-        console.log(cache);
 
         fs.appendFile(`./logs/palisade.log`, `${request.type} query for ${request.question[0].name} from ${request.address.address}\n`, (error) => {
             if (error) throw error;
@@ -153,7 +152,7 @@ class Dnsserver {
                     }));
                 });
 
-                } else if (cache == 1) {   //if the dns server has already cached the domain's ip
+            } else if (typeof cache != `undefined`) {   //if the dns server has already cached the domain's ip
                 request.question.forEach(() => {    //answers each query with 0.0.0.0
                     return response.answer.push(dns.A({
                         name: request.question[0].name,
