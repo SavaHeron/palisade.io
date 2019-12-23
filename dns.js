@@ -139,7 +139,7 @@ class Dnsserver {
     async handlequery(request, response) {
         let i = [];
         let block = await this.checkinsertblock(request.question[0].name);
-        let querytype = request.question[0].type;
+        let querytype = JSON.stringify(request.question[0].type);
         let cache = await this.checkcache(request.question[0].name, querytype);
 
         fs.appendFile(`./logs/palisade.log`, `${request.type} query for ${request.question[0].name} from ${request.address.address}\n`, (error) => {
