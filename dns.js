@@ -140,7 +140,7 @@ class Dnsserver {
     async handlequery(request, response) {
         let i = [];
         let block = await this.checkinsertblock(request.question[0].name);
-        //let cache = await this.checkcache(request.question[0].name);
+        let cache = await this.checkcache(request.question[0].name);
 
         fs.appendFile(`./logs/palisade.log`, `${request.type} query for ${request.question[0].name} from ${request.address.address}\n`, (error) => {
             if (error) throw error;
@@ -182,7 +182,7 @@ class Dnsserver {
             };
 
             return async.parallel(i, () => {
-                if (block != 1 && typeof cache != `undefined`) {
+                if (block != 1 /*&& typeof cache != `undefined`*/) {
                     this.updateinsertcache(request.question[0].name, response);
                 };
                 return response.send();
