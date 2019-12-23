@@ -43,7 +43,7 @@ class Dnsserver {
             let connection = await pool.getConnection();
             let rows = await connection.query(`SELECT * FROM cache WHERE domain LIKE "${domain}"`);
             connection.end();
-            return rows;
+            return rows[0];
         } catch (error) {
             return console.error(error);
         };
