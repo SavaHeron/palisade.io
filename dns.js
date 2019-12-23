@@ -180,7 +180,6 @@ class Dnsserver {
             return async.parallel(i, () => {
                 if (block != 1 && typeof cache != `undefined`) {
                     this.updateinsertcache(request.question[0].name, response);
-                    console.log(response);
                 };
                 return response.send();
             });
