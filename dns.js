@@ -30,11 +30,18 @@ class Dnsserver {
         this.upstreamresolver = resolver;
     };
 
+    analyseblock(domain) {
+        if (true) {
+            return undefined;
+        } else {
+            return 1;
+        };
+    };
+
     async checkcache(domain) {  //finished
         try {
             let connection = await pool.getConnection();
             let rows = await connection.query(`SELECT * FROM cache WHERE domain LIKE "${domain}"`);
-            console.log(rows[0]);
             connection.end();
             return rows;
         } catch (error) {
@@ -42,11 +49,12 @@ class Dnsserver {
         };
     };
 
-    async updatecache(record, date) {
-        let date = new Date();
+    async updatecache(response) {
         try {
             let connection = await pool.getConnection();
-            return await connection.query(`UPDATE cache SET json = ${record}, retrieved = ${date}`);
+            let rows = await connection.query(`UPDATE cache SET record = ${JSON.stringify(JSON.stringify(response))}`);
+            connection.end();
+            return rows;
         } catch (error) {
             return console.error(error);
         };
@@ -63,11 +71,12 @@ class Dnsserver {
         };
     };
 
-    updateinsertcache(domain, response) {
-        if (this.checkcache(domain)) {
-            return this.updatecache(response)
+    async updateinsertcache(domain, response) {
+        let cache = await this.checkcache(domain);
+        if (typeof cache != `undefined` && false) {
+            return this.updatecache(response);
         } else {
-            return this.insertcache(response);
+            return this.insertcache(domain, response);
         };
     };
 
@@ -82,24 +91,23 @@ class Dnsserver {
         };
     };
 
-    async insertblock(domain) {
+    async insertblock(domain) { //finished not tested
         try {
             let connection = await pool.getConnection();
-            return await connection.query(`INSERT INTO block (domain) VALUES (${domain})`) | 0;
+            let rows = await connection.query(`INSERT INTO block (domain) VALUES (${domain})`);
+            connection.end();
+            return rows;
         } catch (error) {
             return console.error(error);
-        } finally {
-            if (connection) {
-                return connection.end();
-            };
         };
     };
 
-    async checkinsertblock(domain) {
+    async checkinsertblock(domain) {    //finished not tested
         let block = await this.checkblock(domain);
+        let analysis = this.analyseblock(domain);
         if (typeof block != `undefined`) {
             return 1;
-        } else if (/*check if should be blocked*/false) {
+        } else if (typeof analysis != `undefined`) {
             this.insertblock(domain);
             return 1;
         } else {
@@ -128,7 +136,7 @@ class Dnsserver {
     async handlequery(request, response) {
         let i = [];
         let block = await this.checkinsertblock(request.question[0].name);
-        let cache = await this.checkcache(request.question[0].name);
+        //let cache = await this.checkcache(request.question[0].name);
 
         fs.appendFile(`./logs/palisade.log`, `${request.type} query for ${request.question[0].name} from ${request.address.address}\n`, (error) => {
             if (error) throw error;
@@ -144,14 +152,14 @@ class Dnsserver {
                     }));
                 });
 
-                /*} else if (cache == 1) {   //if the dns server has already cached the domain's ip
+                } else if (cache == 1) {   //if the dns server has already cached the domain's ip
                 request.question.forEach(() => {    //answers each query with 0.0.0.0
                     return response.answer.push(dns.A({
                         name: request.question[0].name,
                         address: `1.2.3.4`,
                         ttl: 1800
                     }));
-                });*/
+                });
 
                 //} else if (this.checktable(`authority`, `domain`, domain)) {   //if is to block the domain
 
@@ -163,7 +171,7 @@ class Dnsserver {
 
             return async.parallel(i, () => {
                 if (block != 1) {
-                    this.insertcache(request.question[0].name, response);
+                    this.updateinsertcache(request.question[0].name, response);
                 };
                 return response.send();
             });
