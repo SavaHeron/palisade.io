@@ -157,7 +157,7 @@ class Dnsserver {
                 });
 
             } else if (typeof cache != `undefined`) {   //if the dns server has already cached the domain's ip
-                console.log(cache);
+                //console.log(cache);
 
                 /*if (false) {
                     /*request.question.forEach(() => {
