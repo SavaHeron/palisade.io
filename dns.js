@@ -153,18 +153,21 @@ class Dnsserver {
                 });
 
             } else if (typeof cache != `undefined`) {   //if the dns server has already cached the domain's ip
-                //console.log(cache);
+                console.log(cache);
 
-                i.push(callback => {
-                    return this.forwardquery(question, response, callback);
-                });
-                /*request.question.forEach(() => {
+                /*if (false) {
+                    /*request.question.forEach(() => {
                     return response.answer.push(dns.A({
                         name: request.question[0].name,
                         address: `1.2.3.4`,
                         ttl: 1800
                     }));
-                });*/
+                });
+                } else {
+                    i.push(callback => {
+                        return this.forwardquery(question, response, callback);
+                    });
+                };*/
 
                 //} else if (this.checktable(`authority`, `domain`, domain)) {   //if is to block the domain
 
@@ -175,7 +178,7 @@ class Dnsserver {
             };
 
             return async.parallel(i, () => {
-                if (block != 1) {
+                if (block != 1 && typeof cache != `undefined`) {
                     this.updateinsertcache(request.question[0].name, response);
                     console.log(response);
                 };
