@@ -56,7 +56,7 @@ class Dnsserver {
         try {
             let connection = await pool.getConnection();
             console.log(`${JSON.stringify(JSON.stringify(response))}`)
-            let rows = await connection.query(`INSERT INTO cache (domain, record) VALUES ("${domain}", "${JSON.stringify(JSON.stringify(response))}")`);
+            let rows = await connection.query(`INSERT INTO cache (domain, record) VALUES ("${domain}", ${JSON.stringify(JSON.stringify(response))})`);
             connection.end();
             return rows;
         } catch (error) {
@@ -167,8 +167,7 @@ class Dnsserver {
 
             return async.parallel(i, () => {
                 if (block != 1) {
-                    console.log(`${JSON.stringify(JSON.stringify(response))}`)
-                    //this.insertcache(request.question[0].name, response);
+                    this.insertcache(request.question[0].name, response);
                 };
                 return response.send();
             });
