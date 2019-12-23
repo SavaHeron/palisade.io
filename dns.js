@@ -66,7 +66,7 @@ class Dnsserver {
             let record = [];
             record.push(response.question);
             record.push(response.answer);
-            console.log(JSON.stringify(record));
+            console.log(JSON.stringify(JSON.stringify(record)));
             //let rows = await connection.query(`INSERT INTO cache (domain, record) VALUES ("${domain}", ${JSON.stringify(JSON.stringify(record))})`);
             connection.end();
             //return rows;
@@ -141,7 +141,6 @@ class Dnsserver {
         let i = [];
         let block = await this.checkinsertblock(request.question[0].name);
         let cache = await this.checkcache(request.question[0].name);
-        console.log(cache)
 
         fs.appendFile(`./logs/palisade.log`, `${request.type} query for ${request.question[0].name} from ${request.address.address}\n`, (error) => {
             if (error) throw error;
