@@ -60,13 +60,13 @@ class Dnsserver {
         };
     };
 
-    async insertcache(domain, response) {
+    async insertcache(domain, response, type) {
         try {
             let connection = await pool.getConnection();
             let record = [];
             record.push(response.question);
             record.push(response.answer);
-            let rows = await connection.query(`INSERT INTO cache (domain, record) VALUES ("${domain}", ${JSON.stringify(JSON.stringify(record))})`);
+            let rows = await connection.query(`INSERT INTO cache (domain, record, type) VALUES ("${domain}", ${JSON.stringify(JSON.stringify(record))}, ${type})`);
             connection.end();
             return rows;
         } catch (error) {
@@ -74,12 +74,12 @@ class Dnsserver {
         };
     };
 
-    async updateinsertcache(domain, response) {
+    async updateinsertcache(domain, response, type) {
         let cache = await this.checkcache(domain);
         if (typeof cache != `undefined` && false) {
             return this.updatecache(response);
         } else {
-            return console.log(await this.insertcache(domain, response));
+            await this.insertcache(domain, response, type);
         };
     };
 
@@ -139,7 +139,9 @@ class Dnsserver {
     async handlequery(request, response) {
         let i = [];
         let block = await this.checkinsertblock(request.question[0].name);
-        let cache = await this.checkcache(request.question[0].name);
+        let querytype = request.question[0].type;
+        let cache = await this.checkcache(request.question[0].name, querytype);
+        
 
         fs.appendFile(`./logs/palisade.log`, `${request.type} query for ${request.question[0].name} from ${request.address.address}\n`, (error) => {
             if (error) throw error;
@@ -156,11 +158,7 @@ class Dnsserver {
                 });
 
             } else if (typeof cache != `undefined`) {   //if the dns server has already cached the domain's ip
-                let querytype = request.question[0].type;
-
-                cache.forEach((record) => {
-                    console.log(record);
-                });
+                
 
                 /*if (false) {
                     /*request.question.forEach(() => {
@@ -186,7 +184,7 @@ class Dnsserver {
 
             return async.parallel(i, () => {
                 if (block != 1 /*&& typeof cache != `undefined`*/) {
-                    this.updateinsertcache(request.question[0].name, response);
+                    this.updateinsertcache(request.question[0].name, response, querytype);
                 };
                 return response.send();
             });
