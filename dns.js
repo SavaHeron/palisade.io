@@ -163,7 +163,7 @@ class Dnsserver {
 
             } else if (typeof cache != `undefined`) {   //if the dns server has already cached the domain's ip
                 console.log(cache.retrieved);
-                if (currennt) {
+                if (false) {
                     var valid = 1
                     request.question.forEach(() => {
                         return response.answer.push(cache[1]);
