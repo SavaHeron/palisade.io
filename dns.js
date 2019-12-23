@@ -30,7 +30,7 @@ class Dnsserver {
         this.upstreamresolver = resolver;
     };
 
-    async checkcache(domain) {
+    async checkcache(domain) {  //finished
         try {
             let connection = await pool.getConnection();
             let rows = await connection.query(`SELECT * FROM cache WHERE domain LIKE "${domain}"`);
@@ -39,10 +39,6 @@ class Dnsserver {
             return rows;
         } catch (error) {
             return console.error(error);
-            /*} finally {
-                if (connection) {
-                    return connection.end();
-                };*/
         };
     };
 
@@ -53,14 +49,10 @@ class Dnsserver {
             return await connection.query(`UPDATE cache SET json = ${record}, retrieved = ${date}`);
         } catch (error) {
             return console.error(error);
-            /*} finally {
-                if (connection) {
-                    return connection.end();
-                };*/
         };
     };
 
-    async insertcache(domain, response) {   //finished
+    async insertcache(domain, response) {
         try {
             let connection = await pool.getConnection();
             let rows = await connection.query(`INSERT INTO cache (domain, record) VALUES ("${domain}", "${response}")`);
@@ -139,6 +131,7 @@ class Dnsserver {
     async handlequery(request, response) {
         let i = [];
         let block = await this.checkinsertblock(request.question[0].name);
+        let cache = await this.checkcache(request.question[0].name);
 
         fs.appendFile(`./logs/palisade.log`, `${request.type} query for ${request.question[0].name} from ${request.address.address}\n`, (error) => {
             if (error) throw error;
@@ -146,7 +139,7 @@ class Dnsserver {
 
         request.question.forEach(question => {
             if (block == 1) { //executed if the domain should be blocked
-                request.question.forEach(() => {    //answers the query with 0.0.0.0
+                request.question.forEach(() => {    //answers each query with 0.0.0.0
                     return response.answer.push(dns.A({
                         name: request.question[0].name,
                         address: `0.0.0.0`,
@@ -154,7 +147,14 @@ class Dnsserver {
                     }));
                 });
 
-                //} else if (this.checktable(`cache`, `domain`, domain)) {   //if the dns server has already cached the domain's ip
+                } else if (cache == 1) {   //if the dns server has already cached the domain's ip
+                request.question.forEach(() => {    //answers each query with 0.0.0.0
+                    return response.answer.push(dns.A({
+                        name: request.question[0].name,
+                        address: `1.2.3.4`,
+                        ttl: 1800
+                    }));
+                });
 
                 //} else if (this.checktable(`authority`, `domain`, domain)) {   //if is to block the domain
 
@@ -168,7 +168,7 @@ class Dnsserver {
             return async.parallel(i, () => {
                 if (block != 1) {
                     this.insertcache(request.question[0].name, response);
-                    this.checkcache(request.question[0].name);
+                    
                 };
                 return response.send();
             });
