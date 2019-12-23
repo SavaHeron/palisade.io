@@ -147,14 +147,14 @@ class Dnsserver {
                     }));
                 });
 
-                } else if (cache == 1) {   //if the dns server has already cached the domain's ip
+                /*} else if (cache == 1) {   //if the dns server has already cached the domain's ip
                 request.question.forEach(() => {    //answers each query with 0.0.0.0
                     return response.answer.push(dns.A({
                         name: request.question[0].name,
                         address: `1.2.3.4`,
                         ttl: 1800
                     }));
-                });
+                });*/
 
                 //} else if (this.checktable(`authority`, `domain`, domain)) {   //if is to block the domain
 
