@@ -145,8 +145,11 @@ class Dnsserver {
         fs.appendFile(`./logs/palisade.log`, `${request.type} query for ${request.question[0].name} from ${request.address.address}\n`, (error) => {
             if (error) throw error;
         });
-        let querytype = request.question.type;
-        console.log(querytype);
+
+        console.log(request)
+        let querytype = request.question[0].type;
+        console.log(`\n${querytype}`);
+        
         request.question.forEach(question => {
             if (block == 1) { //executed if the domain should be blocked
                 request.question.forEach(() => {    //answers each query with 0.0.0.0
