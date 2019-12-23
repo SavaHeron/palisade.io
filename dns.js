@@ -66,8 +66,8 @@ class Dnsserver {
             let record = [];
             record.push(response.question);
             record.push(response.answer);
-            console.log(record);
-            //let rows = await connection.query(`INSERT INTO cache (domain, record) VALUES ("${domain}", ${JSON.stringify(JSON.stringify(response))})`);
+            console.log(record[0]);
+            //let rows = await connection.query(`INSERT INTO cache (domain, record) VALUES ("${domain}", ${JSON.stringify(JSON.stringify(record))})`);
             connection.end();
             //return rows;
         } catch (error) {
@@ -146,10 +146,6 @@ class Dnsserver {
             if (error) throw error;
         });
 
-        console.log(request)
-        let querytype = request.question[0].type;
-        console.log(`\n${querytype}`);
-        
         request.question.forEach(question => {
             if (block == 1) { //executed if the domain should be blocked
                 request.question.forEach(() => {    //answers each query with 0.0.0.0
@@ -161,7 +157,9 @@ class Dnsserver {
                 });
 
             } else if (typeof cache != `undefined`) {   //if the dns server has already cached the domain's ip
-
+                let querytype = request.question[0].type;
+                console.log(querytype);
+                
                 //console.log(cache);
 
                 /*if (false) {
