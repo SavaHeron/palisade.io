@@ -64,9 +64,9 @@ class Dnsserver {
         try {
             let connection = await pool.getConnection();
             let record = [];
-            record.push(response.question);
             record.push(response.answer);
             console.log(record);
+            console.log(typeof record);
             let rows = await connection.query(`INSERT INTO cache (domain, record) VALUES ("${domain}", ${JSON.stringify(JSON.stringify(response))})`);
             connection.end();
             return rows;
