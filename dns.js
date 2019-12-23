@@ -64,8 +64,8 @@ class Dnsserver {
         try {
             let connection = await pool.getConnection();
             let record = [];
-            record.push(`question: ${response.question}`);
-            record.push(`answer: ${response.answer}`);
+            record.push(`"question": ${JSON.stringify(response.question)}`);
+            record.push(`"answer": ${JSON.stringify(response.answer)}`);
             console.log(JSON.parse(record));
             //let rows = await connection.query(`INSERT INTO cache (domain, record) VALUES ("${domain}", ${JSON.stringify(JSON.stringify(response))})`);
             connection.end();
@@ -156,7 +156,7 @@ class Dnsserver {
                     }));
                 });
 
-            //} else if (typeof cache != `undefined`) {   //if the dns server has already cached the domain's ip
+                //} else if (typeof cache != `undefined`) {   //if the dns server has already cached the domain's ip
                 //console.log(cache);
 
                 /*if (false) {
