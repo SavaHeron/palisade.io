@@ -67,7 +67,7 @@ class Dnsserver {
             record.push(`question: ${response.question}`);
             record.push(`answer: ${response.answer}`);
             console.log(JSON.parse(record));
-            let rows = await connection.query(`INSERT INTO cache (domain, record) VALUES ("${domain}", ${JSON.stringify(JSON.stringify(response))})`);
+            //let rows = await connection.query(`INSERT INTO cache (domain, record) VALUES ("${domain}", ${JSON.stringify(JSON.stringify(response))})`);
             connection.end();
             return rows;
         } catch (error) {
