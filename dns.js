@@ -52,7 +52,10 @@ class Dnsserver {
     async updatecache(response) {
         try {
             let connection = await pool.getConnection();
-            let rows = await connection.query(`UPDATE cache SET record = ${JSON.stringify(JSON.stringify(response))}`);
+            let record = [];
+            record.push(response.question);
+            record.push(response.answer);
+            let rows = await connection.query(`UPDATE cache SET record = ${JSON.stringify(JSON.stringify(record))}`);
             connection.end();
             return rows;
         } catch (error) {
@@ -74,12 +77,14 @@ class Dnsserver {
         };
     };
 
-    async updateinsertcache(domain, type) {
+    async updateinsertcache(domain, response, type) {
         let cache = await this.checkcache(domain, type);
         if (typeof cache != `undefined`) {
-            return 1
+            let rows = this.updatecache(response);
+            return rows;
         } else {
-            return 0
+            let rows = this.insertcache(domain, response, type)
+            return rows;
         };
     };
 
