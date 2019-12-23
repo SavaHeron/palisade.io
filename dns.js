@@ -140,7 +140,7 @@ class Dnsserver {
     async handlequery(request, response) {
         let i = [];
         let block = await this.checkinsertblock(request.question[0].name);
-        let cache = await this.checkcache(request.question[0].name);
+        //let cache = await this.checkcache(request.question[0].name);
 
         fs.appendFile(`./logs/palisade.log`, `${request.type} query for ${request.question[0].name} from ${request.address.address}\n`, (error) => {
             if (error) throw error;
@@ -156,7 +156,7 @@ class Dnsserver {
                     }));
                 });
 
-            } else if (typeof cache != `undefined`) {   //if the dns server has already cached the domain's ip
+            //} else if (typeof cache != `undefined`) {   //if the dns server has already cached the domain's ip
                 //console.log(cache);
 
                 /*if (false) {
