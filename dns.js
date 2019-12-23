@@ -55,7 +55,6 @@ class Dnsserver {
     async insertcache(domain, response) {
         try {
             let connection = await pool.getConnection();
-            console.log(`${JSON.stringify(JSON.stringify(response))}`)
             let rows = await connection.query(`INSERT INTO cache (domain, record) VALUES ("${domain}", ${JSON.stringify(JSON.stringify(response))})`);
             connection.end();
             return rows;
@@ -72,7 +71,7 @@ class Dnsserver {
         };
     };
 
-    async checkblock(domain) {  //finished 
+    async checkblock(domain) {  //finished
         try {
             let connection = await pool.getConnection();
             let rows = await connection.query(`SELECT * FROM block WHERE domain LIKE "${domain}"`);
@@ -122,9 +121,6 @@ class Dnsserver {
         });
 
         forwardedrequest.on(`end`, callback);
-
-        //this.insertcache(forwardedrequest);
-        //console.log(`cache`);
 
         return forwardedrequest.send();
     };
