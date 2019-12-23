@@ -153,7 +153,7 @@ class Dnsserver {
                 });
 
             } else if (typeof cache != `undefined`) {   //if the dns server has already cached the domain's ip
-                request.question.forEach(() => {    //answers each query with 0.0.0.0
+                request.question.forEach(() => {
                     return response.answer.push(dns.A({
                         name: request.question[0].name,
                         address: `1.2.3.4`,
