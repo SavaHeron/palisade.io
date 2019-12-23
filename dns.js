@@ -141,6 +141,7 @@ class Dnsserver {
         let i = [];
         let block = await this.checkinsertblock(request.question[0].name);
         let cache = await this.checkcache(request.question[0].name);
+        console.log(cache)
 
         fs.appendFile(`./logs/palisade.log`, `${request.type} query for ${request.question[0].name} from ${request.address.address}\n`, (error) => {
             if (error) throw error;
