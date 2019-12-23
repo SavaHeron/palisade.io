@@ -145,7 +145,8 @@ class Dnsserver {
         fs.appendFile(`./logs/palisade.log`, `${request.type} query for ${request.question[0].name} from ${request.address.address}\n`, (error) => {
             if (error) throw error;
         });
-
+        let querytype = request.question.type;
+        console.log(querytype);
         request.question.forEach(question => {
             if (block == 1) { //executed if the domain should be blocked
                 request.question.forEach(() => {    //answers each query with 0.0.0.0
@@ -156,7 +157,8 @@ class Dnsserver {
                     }));
                 });
 
-                //} else if (typeof cache != `undefined`) {   //if the dns server has already cached the domain's ip
+            } else if (typeof cache != `undefined`) {   //if the dns server has already cached the domain's ip
+
                 //console.log(cache);
 
                 /*if (false) {
