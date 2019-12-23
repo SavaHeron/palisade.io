@@ -174,12 +174,6 @@ class Dnsserver {
                         return this.forwardquery(question, response, callback);
                     });
                 };
-                /*
-
-
-                } else {
-                    
-                };*/
 
                 //} else if (this.checktable(`authority`, `domain`, domain)) {   //if is to block the domain
 
