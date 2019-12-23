@@ -79,7 +79,7 @@ class Dnsserver {
         if (typeof cache != `undefined` && false) {
             return this.updatecache(response);
         } else {
-            return console.log(this.insertcache(domain, response));
+            return console.log(await this.insertcache(domain, response));
         };
     };
 
