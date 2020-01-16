@@ -185,6 +185,7 @@ class Dnsserver {
 
             return async.parallel(i, () => {
                 if (block != 1 && valid != 1) {
+                    console.log(`teste`);
                     this.updateinsertcache(request.question[0].name, response, querytype);
                 };
                 return response.send();
