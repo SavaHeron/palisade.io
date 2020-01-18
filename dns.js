@@ -124,7 +124,7 @@ class Dnsserver {
         };
     };
 
-    forwardquery(forwardedquestion, response, callback) {
+    forwardquery(forwardedquestion, response, callback) {   //forwards the query to the upstream resolver - finished
         let forwardedrequest = dns.Request({
             question: forwardedquestion,
             server: this.upstreamresolver,
@@ -163,21 +163,19 @@ class Dnsserver {
                 });
 
             } else if (typeof cache != `undefined`) {   //if the dns server has already cached the domain's ip
-                console.log(cache.retrieved);
-                console.log()
-                if (false) {
+                console.log(cache.retrieved);   //time at which retreived
+                console.log(cache[1])
+                if (false) {    //if the record is valid
                     var valid = 1
                     request.question.forEach(() => {
                         return response.answer.push(cache[1]);
                     });
-                } else {
+                } else {    //if the record is not valid so needs refreshing
                     var valid = 0
                     i.push(callback => {
                         return this.forwardquery(question, response, callback);
                     });
                 };
-
-                //} else if (this.checktable(`authority`, `domain`, domain)) {   //if is to block the domain
 
             } else {
                 i.push(callback => {
