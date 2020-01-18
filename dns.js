@@ -165,6 +165,10 @@ class Dnsserver {
             } else if (typeof cache != `undefined`) {   //if the dns server has already cached the domain's ip
                 console.log(cache.retrieved);   //time at which retreived
                 console.log(cache[1])
+                let now = new Date();
+                let then = cache.retrieved;
+                let thenplusttl = dt.addSeconds(then, +cache[1]);
+                console.log(thenplusttl)
                 if (false) {    //if the record is valid
                     var valid = 1
                     request.question.forEach(() => {
