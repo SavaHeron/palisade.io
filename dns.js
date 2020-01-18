@@ -13,6 +13,7 @@ const async = require(`async`);
 const dns = require(`native-dns`);
 const fs = require(`fs`);
 const mariadb = require(`mariadb`);
+const dt = require(`date-and-time`);
 const pool = mariadb.createPool({
     host: "localhost",
     user: "root",
@@ -49,7 +50,7 @@ class Dnsserver {
         };
     };
 
-    async updatecache(domain, response, type) { //presumed finished not tested
+    async updatecache(domain, response, type) { //finished
         try {
             let connection = await pool.getConnection();
             let record = [];
@@ -77,7 +78,7 @@ class Dnsserver {
         };
     };
 
-    async updateinsertcache(domain, response, type) {
+    async updateinsertcache(domain, response, type) {   //finished
         let cache = await this.checkcache(domain, type);
         if (typeof cache != `undefined`) {
             let rows = this.updatecache(domain, response, type);
@@ -163,6 +164,7 @@ class Dnsserver {
 
             } else if (typeof cache != `undefined`) {   //if the dns server has already cached the domain's ip
                 console.log(cache.retrieved);
+                console.log()
                 if (false) {
                     var valid = 1
                     request.question.forEach(() => {
@@ -185,7 +187,6 @@ class Dnsserver {
 
             return async.parallel(i, () => {
                 if (block != 1 && valid != 1) {
-                    console.log(`teste`);
                     this.updateinsertcache(request.question[0].name, response, querytype);
                 };
                 return response.send();
