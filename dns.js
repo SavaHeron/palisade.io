@@ -177,7 +177,8 @@ class Dnsserver {
                         //} else if (answer[1].length = 0) {
                             //return console.log(0);
                         } else {
-                            return response.answer.push(answer[1]);
+                            /*return*/ response.answer.push(answer[1]);
+                            console.log(response);
                         };
                     });
                 } else {    //if the record is not valid
