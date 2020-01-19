@@ -171,14 +171,19 @@ class Dnsserver {
                     var valid = 1
                     request.question.forEach(() => {
                         let answer = JSON.parse(cache.record);
-                        console.log(answer)
                         if (answer[1].length = 1) {
+                            console.log(`1`)
                             return response.answer.push(answer[1][0]);
-                        //} else if (answer[1].length = 0) {
-                            //return console.log(0);
+                        } else if (answer[1].length = 0) {
+                            console.log(`2`)
+                            return response.answer.push(dns.A({
+                                name: cache.domain,
+                                address: `0.0.0.0`,
+                                ttl: 1800
+                            }));
                         } else {
                             /*return*/ response.answer.push(answer[1]);
-                            console.log(response);
+                            console.log(`r`, response);
                         };
                     });
                 } else {    //if the record is not valid
