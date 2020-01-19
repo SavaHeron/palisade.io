@@ -50,13 +50,13 @@ class Dnsserver {
         };
     };
 
-    async updatecache(domain, response, type) { //finished
+    async updatecache(domain, response, type, ttl) { //finished
         try {
             let connection = await pool.getConnection();
             let record = [];
             record.push(response.question);
             record.push(response.answer);
-            let rows = await connection.query(`UPDATE cache SET record = ${JSON.stringify(JSON.stringify(record))} WHERE domain = "${domain}" AND type = ${type}`);
+            let rows = await connection.query(`UPDATE cache SET record = ${JSON.stringify(JSON.stringify(record))} WHERE domain = "${domain}" AND type = ${type} AND ttl = ${ttl}`);
             connection.end();
             return rows;
         } catch (error) {
@@ -70,7 +70,7 @@ class Dnsserver {
             let record = [];
             record.push(response.question);
             record.push(response.answer);
-            let rows = await connection.query(`INSERT INTO cache (domain, record, type) VALUES ("${domain}", ${JSON.stringify(JSON.stringify(record))}, ${type})`);
+            let rows = await connection.query(`INSERT INTO cache (domain, record, type, ttl) VALUES ("${domain}", ${JSON.stringify(JSON.stringify(record))}, ${type}, ${ttl})`);
             connection.end();
             return rows;
         } catch (error) {
@@ -78,13 +78,13 @@ class Dnsserver {
         };
     };
 
-    async updateinsertcache(domain, response, type) {   //finished
+    async updateinsertcache(domain, response, type, ttl) {   //finished
         let cache = await this.checkcache(domain, type);
         if (typeof cache != `undefined`) {
-            let rows = this.updatecache(domain, response, type);
+            let rows = this.updatecache(domain, response, type, ttl);
             return rows;
         } else {
-            let rows = this.insertcache(domain, response, type)
+            let rows = this.insertcache(domain, response, type, ttl)
             return rows;
         };
     };
@@ -146,6 +146,7 @@ class Dnsserver {
         let i = [];
         let block = await this.checkinsertblock(request.question[0].name);
         let querytype = JSON.stringify(request.question[0].type);
+        let queryttl = JSON.stringify(request.question[0].ttl);
         let cache = await this.checkcache(request.question[0].name, querytype);
 
         fs.appendFile(`./logs/palisade.log`, `${request.type} query for ${request.question[0].name} from ${request.address.address}\n`, (error) => {
@@ -163,13 +164,10 @@ class Dnsserver {
                 });
 
             } else if (typeof cache != `undefined`) {   //if the dns server has already cached the domain's ip
-                console.log(cache.retrieved);   //time at which retreived
-                console.log(cache)
-                let now = new Date().getTime();
-                let then = new Date(cache.retrieved).getTime();
-                //let thenplusttl = dt.addSeconds(then, +cache[1]);
-                //console.log(thenplusttl)
-                if (false) {    //if the record is valid
+                let now = new Date().getTime(); //gets the time now in milliseconds since the beginning of UNIX
+                let then = new Date(cache.retrieved).getTime(); //convert the time at which the record was retreived to milliseconds since the beginning of UNIX
+                let thenplusttl = dt.addSeconds(then, +cache.ttl);  //adds the ttl to the time at which the record was retreived
+                if (now > thenplusttl) {    //if the record is valid
                     var valid = 1
                     request.question.forEach(() => {
                         return response.answer.push(cache[1]);
@@ -191,7 +189,7 @@ class Dnsserver {
             return async.parallel(i, () => {
                 if (block != 1 && valid != 1) {
                     console.log(`recaching`)
-                    this.updateinsertcache(request.question[0].name, response, querytype);
+                    this.updateinsertcache(request.question[0].name, response, querytype, queryttl);
                 };
                 return response.send();
             });
