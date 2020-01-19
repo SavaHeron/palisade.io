@@ -164,10 +164,10 @@ class Dnsserver {
                 });
 
             } else if (typeof cache != `undefined`) {   //if the dns server has already cached the domain's ip
-                let now = new Date().getTime(); //gets the time now in milliseconds since the beginning of UNIX
-                let then = new Date(cache.retrieved).getTime(); //convert the time at which the record was retreived to milliseconds since the beginning of UNIX
+                let now = new Date(); //gets the time now in milliseconds since the beginning of UNIX
+                let then = new Date(cache.retrieved); //convert the time at which the record was retreived to milliseconds since the beginning of UNIX
                 let thenplusttl = dt.addSeconds(then, +cache.ttl);  //adds the ttl to the time at which the record was retreived
-                if (now > thenplusttl) {    //if the record is valid
+                if (now.getTime() > thenplusttl.getTime()) {    //if the record is valid
                     var valid = 1
                     request.question.forEach(() => {
                         return response.answer.push(cache[1]);
