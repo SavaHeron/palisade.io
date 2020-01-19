@@ -171,7 +171,7 @@ class Dnsserver {
                     var valid = 1
                     request.question.forEach(() => {
                         let answer = JSON.parse(cache.record);
-                        return response.answer.push(answer[1]);
+                        return response.answer.push(answer[1][0]);
                     });
                 } else {    //if the record is not valid
                     var valid = 0
