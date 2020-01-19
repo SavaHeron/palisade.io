@@ -171,10 +171,11 @@ class Dnsserver {
                     var valid = 1
                     request.question.forEach(() => {
                         let answer = JSON.parse(cache.record);
+                        console.log(answer)
                         if (answer[1].length = 1) {
                             return response.answer.push(answer[1][0]);
-                        } else if (answer[1].length = 0) {
-                            return console.log(0);
+                        //} else if (answer[1].length = 0) {
+                            //return console.log(0);
                         } else {
                             return response.answer.push(answer[1]);
                         };
