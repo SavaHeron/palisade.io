@@ -172,7 +172,11 @@ class Dnsserver {
                     request.question.forEach(() => {
                         let answer = JSON.parse(cache.record);
                         if (answer[0].length = 0) {
-                            return response.answer.push(dns.A({}));
+                            return response.answer.push(dns.A({
+                                name: request.question[0].name,
+                                address: `0.0.0.0`,
+                                ttl: 1800
+                            }));
                         } else if (answer[0].length = 1) {
                             return response.answer.push(answer[1][0]);
                         } else {
