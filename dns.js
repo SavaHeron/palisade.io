@@ -64,7 +64,7 @@ class Dnsserver {
         };
     };
 
-    async insertcache(domain, response, type) { //finished
+    async insertcache(domain, response, type, ttl) { //finished
         try {
             let connection = await pool.getConnection();
             let record = [];
@@ -171,7 +171,14 @@ class Dnsserver {
                     var valid = 1
                     request.question.forEach(() => {
                         let answer = JSON.parse(cache.record);
-                        return response.answer.push(answer[1][0]);
+                        if (answer[0].length = 0) {
+                            return response.answer.push(dns.A({}));
+                        } else if (answer[0].length = 1) {
+                            return response.answer.push(answer[1][0]);
+                        } else {
+                            return response.answer.push(answer[1]);
+                        };
+
                     });
                 } else {    //if the record is not valid
                     var valid = 0
