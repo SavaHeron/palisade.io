@@ -164,15 +164,15 @@ class Dnsserver {
                 });
 
             } else if (typeof cache != `undefined`) {   //if the dns server has already cached the domain's ip
-                let now = new Date(); //gets the time now in milliseconds since the beginning of UNIX
-                let then = new Date(cache.retrieved); //convert the time at which the record was retreived to milliseconds since the beginning of UNIX
-                let thenplusttl = dt.addSeconds(then, +cache.ttl);  //adds the ttl to the time at which the record was retreived
+                let now = new Date();
+                let then = new Date(cache.retrieved);
+                let thenplusttl = dt.addSeconds(then, +cache.ttl);
                 if (now.getTime() > thenplusttl.getTime()) {    //if the record is valid
                     var valid = 1
                     request.question.forEach(() => {
-                        return response.answer.push(cache[1]);
+                        return response.answer.push(cache.record);
                     });
-                } else {    //if the record is not valid so needs refreshing
+                } else {    //if the record is not valid
                     var valid = 0
                     console.log(`valid = ${valid}`)
                     i.push(callback => {
