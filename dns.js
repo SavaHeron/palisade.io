@@ -170,7 +170,8 @@ class Dnsserver {
                 if (now.getTime() > thenplusttl.getTime()) {    //if the record is valid
                     var valid = 1
                     request.question.forEach(() => {
-                        return response.answer.push(cache.record);
+                        let answer = JSON.parse(cache.record);
+                        return response.answer.push(answer[1]);
                     });
                 } else {    //if the record is not valid
                     var valid = 0
