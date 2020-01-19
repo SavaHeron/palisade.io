@@ -176,6 +176,7 @@ class Dnsserver {
                     });
                 } else {    //if the record is not valid so needs refreshing
                     var valid = 0
+                    console.log(`valid = ${valid}`)
                     i.push(callback => {
                         return this.forwardquery(question, response, callback);
                     });
@@ -189,6 +190,7 @@ class Dnsserver {
 
             return async.parallel(i, () => {
                 if (block != 1 && valid != 1) {
+                    console.log(`recaching`)
                     this.updateinsertcache(request.question[0].name, response, querytype);
                 };
                 return response.send();
