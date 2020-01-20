@@ -194,7 +194,8 @@ class Dnsserver {
             return async.parallel(i, () => {
                 if (block != 1 && valid != 1) {
                     console.log(`recaching`);
-                    console.log(response)
+                    console.log(response.answer);
+                    //if (response.answer)
                     /*try {
                         var queryttl = JSON.stringify(response.answer[0].ttl);
                     } catch (error) {
