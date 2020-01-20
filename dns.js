@@ -198,8 +198,7 @@ class Dnsserver {
 
             return async.parallel(i, () => {
                 if (block != 1 && valid != 1) {
-                    console.log(response);
-                    //let queryttl = JSON.stringify(response.question[0].ttl);
+                    let queryttl = JSON.stringify(response.answer[0].ttl);
                     return this.updateinsertcache(request.question[0].name, response, querytype, queryttl);
                 };
                 console.log(response);
