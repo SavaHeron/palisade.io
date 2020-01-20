@@ -166,7 +166,7 @@ class Dnsserver {
                 let now = new Date();
                 let then = new Date(cache.retrieved);
                 let thenplusttl = dt.addSeconds(then, +cache.ttl);
-                if (now.getTime() > thenplusttl.getTime()) {    //if the record is valid
+                if (now.getTime() < thenplusttl.getTime()) {    //if the record is valid
                     var valid = 1
                     request.question.forEach(() => {
                         let answer = JSON.parse(cache.record);
@@ -197,10 +197,10 @@ class Dnsserver {
 
             return async.parallel(i, () => {
                 if (block != 1 && valid != 1) {
+                    console.log(`recaching`);
                     let queryttl = JSON.stringify(response.answer[0].ttl);
                     this.updateinsertcache(request.question[0].name, response, querytype, queryttl);
                 };
-                console.log(response);
                 return response.send();
             });
         });
