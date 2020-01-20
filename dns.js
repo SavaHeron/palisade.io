@@ -202,6 +202,7 @@ class Dnsserver {
                         let queryttl = JSON.stringify(response.answer[0].ttl);
                     } catch (error) {
                         console.error(error);
+                        break;
                     };
                     this.updateinsertcache(request.question[0].name, response, querytype, queryttl);
                 };
