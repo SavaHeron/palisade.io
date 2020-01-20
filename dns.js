@@ -130,15 +130,12 @@ class Dnsserver {
             server: this.upstreamresolver,
             cache: false
         });
-
         forwardedrequest.on(`message`, (_error, message) => {
             return message.answer.forEach(element => {
                 return response.answer.push(element);
             });
         });
-
         forwardedrequest.on(`end`, callback);
-
         return forwardedrequest.send();
     };
 
@@ -147,13 +144,11 @@ class Dnsserver {
         let block = await this.checkinsertblock(request.question[0].name);
         let querytype = JSON.stringify(request.question[0].type);
         let cache = await this.checkcache(request.question[0].name, querytype);
-
         fs.appendFile(`./logs/palisade.log`, `${request.question[0].type} query for ${request.question[0].name} from ${request.address.address}\n`, (error) => {
             if (error) {
                 return console.error(error);
             };
         });
-
         request.question.forEach(question => {
             if (block == 1) { //executed if the domain should be blocked
                 fs.appendFile(`./logs/palisade.log`, `blocking ${request.question[0].name}\n`, (error) => {
@@ -161,7 +156,6 @@ class Dnsserver {
                         return console.error(error);
                     };
                 });
-
                 request.question.forEach(() => {    //answers each query with 0.0.0.0
                     return response.answer.push(dns.A({
                         name: request.question[0].name,
@@ -169,7 +163,6 @@ class Dnsserver {
                         ttl: 1800
                     }));
                 });
-
             } else if (typeof cache != `undefined`) {   //if the dns server has already cached the domain's ip
                 let now = new Date();
                 let then = new Date(cache.retrieved);
@@ -184,7 +177,7 @@ class Dnsserver {
                             return response.answer.push(answer[1]);
                         } else {
                             return console.log(`empty answer`)
-                        }
+                        };
                     });
                 } else {    //if the record is not valid
                     var valid = 0;
@@ -192,13 +185,11 @@ class Dnsserver {
                         return this.forwardquery(question, response, callback);
                     });
                 };
-
             } else {
                 i.push(callback => {
                     return this.forwardquery(question, response, callback);
                 });
             };
-
             return async.parallel(i, () => {
                 if (block != 1 && valid != 1) {
                     if (response.answer.length != 0) {
@@ -207,7 +198,6 @@ class Dnsserver {
                                 return console.error(error);
                             };
                         });
-
                         let queryttl = JSON.stringify(response.answer[0].ttl);
                         this.updateinsertcache(request.question[0].name, response, querytype, queryttl);
                     };
@@ -221,6 +211,11 @@ class Dnsserver {
         udpserver.serve(this.serverport, this.serverip);
 
         udpserver.on(`listening`, () => {
+            fs.appendFile(`./logs/palisade.log`, `listening on ${this.serverip}:${this.serverport}\n`, (error) => {
+                if (error) {
+                    return console.error(error);
+                };
+            });
             return console.log(`listening on ${this.serverip}:${this.serverport}`);
         });
 
