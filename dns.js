@@ -201,6 +201,7 @@ class Dnsserver {
                     let queryttl = JSON.stringify(response.answer[0].ttl);
                     this.updateinsertcache(request.question[0].name, response, querytype, queryttl);
                 };
+                console.log(response);
                 return response.send();
             });
         });
