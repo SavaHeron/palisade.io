@@ -143,6 +143,7 @@ class Dnsserver {
     };
 
     async handlequery(request, response) {
+        console.log(request.question);
         let i = [];
         let block = await this.checkinsertblock(request.question[0].name);
         let querytype = JSON.stringify(request.question[0].type);
