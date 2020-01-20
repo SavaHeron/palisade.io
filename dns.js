@@ -194,7 +194,7 @@ class Dnsserver {
             return async.parallel(i, () => {
                 if (block != 1 && valid != 1) {
                     if (response.answer.length != 0) {
-                        fs.appendFile(`./logs/palisade.log`, `recaching \n`, (error) => {
+                        fs.appendFile(`./logs/palisade.log`, `recaching ${response.question.name}\n`, (error) => {
                             if (error) {
                                 return console.error(error);
                             };
