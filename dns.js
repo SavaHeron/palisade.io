@@ -148,12 +148,20 @@ class Dnsserver {
         let querytype = JSON.stringify(request.question[0].type);
         let cache = await this.checkcache(request.question[0].name, querytype);
 
-        fs.appendFile(`./logs/palisade.log`, `${request.question.type} query for ${request.question[0].name} from ${request.address.address}\n`, (error) => {
-            if (error) throw error;
+        fs.appendFile(`./logs/palisade.log`, `${request.question[0].type} query for ${request.question[0].name} from ${request.address.address}\n`, (error) => {
+            if (error) {
+                return console.error(error);
+            };
         });
 
         request.question.forEach(question => {
             if (block == 1) { //executed if the domain should be blocked
+                fs.appendFile(`./logs/palisade.log`, `blocking ${request.question[0].name}\n`, (error) => {
+                    if (error) {
+                        return console.error(error);
+                    };
+                });
+
                 request.question.forEach(() => {    //answers each query with 0.0.0.0
                     return response.answer.push(dns.A({
                         name: request.question[0].name,
@@ -194,7 +202,7 @@ class Dnsserver {
             return async.parallel(i, () => {
                 if (block != 1 && valid != 1) {
                     if (response.answer.length != 0) {
-                        fs.appendFile(`./logs/palisade.log`, `recaching ${response.question.name}\n`, (error) => {
+                        fs.appendFile(`./logs/palisade.log`, `(re)caching ${response.question[0].name}\n`, (error) => {
                             if (error) {
                                 return console.error(error);
                             };
@@ -226,7 +234,9 @@ class Dnsserver {
 
         udpserver.on(`error`, (error, _message, _response) => {
             fs.appendFile(`./logs/error.log`, `${error.stack}\n`, (error) => {
-                if (error) throw error;
+                if (error) {
+                    return console.error(error);
+                };
             });
             return console.error(error.stack);
         });
