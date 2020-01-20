@@ -198,7 +198,11 @@ class Dnsserver {
             return async.parallel(i, () => {
                 if (block != 1 && valid != 1) {
                     console.log(`recaching`);
-                    let queryttl = JSON.stringify(response.answer[0].ttl);
+                    try {
+                        let queryttl = JSON.stringify(response.answer[0].ttl);
+                    } catch (error) {
+                        console.error(error);
+                    };
                     this.updateinsertcache(request.question[0].name, response, querytype, queryttl);
                 };
                 console.log(response);
