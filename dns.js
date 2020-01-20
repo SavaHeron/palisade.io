@@ -175,7 +175,7 @@ class Dnsserver {
                         } else if (answer[1].length == 0) {
                             return response.answer.push(dns.A({
                                 name: cache.domain,
-                                address: `0.0.0.0`,
+                                address: null,
                                 ttl: 1800
                             }));
                         } else {
