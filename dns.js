@@ -147,7 +147,6 @@ class Dnsserver {
         let i = [];
         let block = await this.checkinsertblock(request.question[0].name);
         let querytype = JSON.stringify(request.question[0].type);
-        let queryttl = JSON.stringify(request.question[0].ttl);
         let cache = await this.checkcache(request.question[0].name, querytype);
 
         fs.appendFile(`./logs/palisade.log`, `${request.type} query for ${request.question[0].name} from ${request.address.address}\n`, (error) => {
@@ -199,7 +198,8 @@ class Dnsserver {
 
             return async.parallel(i, () => {
                 if (block != 1 && valid != 1) {
-                    console.log(`recaching`);
+                    console.log(response);
+                    //let queryttl = JSON.stringify(response.question[0].ttl);
                     return this.updateinsertcache(request.question[0].name, response, querytype, queryttl);
                 };
                 console.log(response);
