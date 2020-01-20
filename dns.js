@@ -184,8 +184,7 @@ class Dnsserver {
                         };
                     });
                 } else {    //if the record is not valid
-                    var valid = 0
-                    console.log(`valid = ${valid}`)
+                    var valid = 0;
                     i.push(callback => {
                         return this.forwardquery(question, response, callback);
                     });
@@ -199,9 +198,10 @@ class Dnsserver {
 
             return async.parallel(i, () => {
                 if (block != 1 && valid != 1) {
-                    console.log(`recaching`)
-                    this.updateinsertcache(request.question[0].name, response, querytype, queryttl);
+                    console.log(`recaching`);
+                    return this.updateinsertcache(request.question[0].name, response, querytype, queryttl);
                 };
+                console.log(response);
                 return response.send();
             });
         });
