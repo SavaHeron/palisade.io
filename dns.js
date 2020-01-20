@@ -31,7 +31,7 @@ class Dnsserver {
         this.upstreamresolver = resolver;
     };
 
-    analyseblock(domain) {
+    analyseblock(domain) {  //not finished
         if (true) {
             return undefined;
         } else {
