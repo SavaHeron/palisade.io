@@ -194,8 +194,10 @@ class Dnsserver {
             return async.parallel(i, () => {
                 if (block != 1 && valid != 1) {
                     if (response.answer.length != 0) {
-                        fs.appendFile(`./logs/palisade.log`, `${request.type} query for ${request.question[0].name} from ${request.address.address}\n`, (error) => {
-                            if (error) throw error;
+                        fs.appendFile(`./logs/palisade.log`, `recaching \n`, (error) => {
+                            if (error) {
+                                return console.error(error);
+                            };
                         });
 
                         let queryttl = JSON.stringify(response.answer[0].ttl);
