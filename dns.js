@@ -175,8 +175,6 @@ class Dnsserver {
                             return response.answer.push(answer[1][0]);
                         } else if (answer[1].length < 1) {
                             return response.answer.push(answer[1]);
-                        } else {
-                            return console.log(`empty answer`)
                         };
                     });
                 } else {    //if the record is not valid
