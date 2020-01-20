@@ -204,7 +204,7 @@ class Dnsserver {
                     } catch (error) {
                         console.error(error);
                     };
-                    */this.updateinsertcache(request.question[0].name, response, querytype, queryttl);
+                    this.updateinsertcache(request.question[0].name, response, querytype, queryttl);*/
                 };
                 console.log(response);
                 return response.send();
