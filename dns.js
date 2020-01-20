@@ -148,7 +148,7 @@ class Dnsserver {
         let querytype = JSON.stringify(request.question[0].type);
         let cache = await this.checkcache(request.question[0].name, querytype);
 
-        fs.appendFile(`./logs/palisade.log`, `${request.type} query for ${request.question[0].name} from ${request.address.address}\n`, (error) => {
+        fs.appendFile(`./logs/palisade.log`, `${request.question.type} query for ${request.question[0].name} from ${request.address.address}\n`, (error) => {
             if (error) throw error;
         });
 
@@ -193,15 +193,14 @@ class Dnsserver {
 
             return async.parallel(i, () => {
                 if (block != 1 && valid != 1) {
-                    console.log(`recaching`);
-                    console.log(response.answer.length);
-                    //if (response.answer)
-                    /*try {
-                        var queryttl = JSON.stringify(response.answer[0].ttl);
-                    } catch (error) {
-                        console.error(error);
+                    if (response.answer.length != 0) {
+                        fs.appendFile(`./logs/palisade.log`, `${request.type} query for ${request.question[0].name} from ${request.address.address}\n`, (error) => {
+                            if (error) throw error;
+                        });
+
+                        let queryttl = JSON.stringify(response.answer[0].ttl);
+                        this.updateinsertcache(request.question[0].name, response, querytype, queryttl);
                     };
-                    this.updateinsertcache(request.question[0].name, response, querytype, queryttl);*/
                 };
                 return response.send();
             });
