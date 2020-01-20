@@ -172,15 +172,11 @@ class Dnsserver {
                         let answer = JSON.parse(cache.record);
                         if (answer[1].length == 1) {
                             return response.answer.push(answer[1][0]);
-                        } else if (answer[1].length == 0) {
-                            return response.answer.push(dns.A({
-                                name: cache.domain,
-                                address: null,
-                                ttl: 1800
-                            }));
-                        } else {
+                        } else if (answer[1].length < 1) {
                             return response.answer.push(answer[1]);
-                        };
+                        } else {
+                            return console.log(`empty answer`)
+                        }
                     });
                 } else {    //if the record is not valid
                     var valid = 0;
