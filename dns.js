@@ -14,6 +14,7 @@ const dns = require(`native-dns`);
 const fs = require(`fs`);
 const mariadb = require(`mariadb`);
 const dt = require(`date-and-time`);
+const rp = require('request-promise');
 const pool = mariadb.createPool({
     host: "localhost",
     user: "root",
@@ -31,7 +32,18 @@ class Dnsserver {
         this.upstreamresolver = resolver;
     };
 
-    analyseblock(domain) {  //not finished
+    async analyseblock(domain) {  //not finished
+        try {
+            let html = await rp(`http://${domain}`);
+            console.log(html)
+        } catch (error) {
+            fs.appendFile(`./logs/error.log`, `${error}\n`, (error) => {
+                if (error) {
+                    return console.error(error);
+                };
+            });
+            return console.error(error);
+        };
         if (true) {
             return undefined;
         } else {
@@ -46,6 +58,11 @@ class Dnsserver {
             connection.end();
             return rows[0];
         } catch (error) {
+            fs.appendFile(`./logs/error.log`, `${error}\n`, (error) => {
+                if (error) {
+                    return console.error(error);
+                };
+            });
             return console.error(error);
         };
     };
@@ -60,6 +77,11 @@ class Dnsserver {
             connection.end();
             return rows;
         } catch (error) {
+            fs.appendFile(`./logs/error.log`, `${error}\n`, (error) => {
+                if (error) {
+                    return console.error(error);
+                };
+            });
             return console.error(error);
         };
     };
@@ -74,6 +96,11 @@ class Dnsserver {
             connection.end();
             return rows;
         } catch (error) {
+            fs.appendFile(`./logs/error.log`, `${error}\n`, (error) => {
+                if (error) {
+                    return console.error(error);
+                };
+            });
             return console.error(error);
         };
     };
@@ -96,6 +123,11 @@ class Dnsserver {
             connection.end();
             return rows[0];
         } catch (error) {
+            fs.appendFile(`./logs/error.log`, `${error}\n`, (error) => {
+                if (error) {
+                    return console.error(error);
+                };
+            });
             return console.error(error);
         };
     };
@@ -107,6 +139,11 @@ class Dnsserver {
             connection.end();
             return rows;
         } catch (error) {
+            fs.appendFile(`./logs/error.log`, `${error}\n`, (error) => {
+                if (error) {
+                    return console.error(error);
+                };
+            });
             return console.error(error);
         };
     };
@@ -231,7 +268,7 @@ class Dnsserver {
                     return console.error(error);
                 };
             });
-            return console.error(error.stack);
+            return console.error(error);
         });
     };
 };
