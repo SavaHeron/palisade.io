@@ -135,7 +135,7 @@ class Dnsserver {
     async insertblock(domain) { //finished not tested
         try {
             let connection = await pool.getConnection();
-            let rows = await connection.query(`INSERT INTO block (domain) VALUES (${domain})`);
+            let rows = await connection.query(`INSERT INTO block (domain) VALUES ("${domain}")`);
             connection.end();
             return rows;
         } catch (error) {
