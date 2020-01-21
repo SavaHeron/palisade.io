@@ -1,3 +1,5 @@
+'use strict';
+
 /*
 Name: 		index.js
 Purpose:	A-Level Computer Science coursework	main script
