@@ -151,7 +151,7 @@ class Dnsserver {
 
     async checkinsertblock(domain) {    //finished not tested
         let block = await this.checkblock(domain);
-        let analysis = this.analyseblock(domain);
+        let analysis = await this.analyseblock(domain);
         if (typeof block != `undefined`) {
             return 1;
         } else if (typeof analysis != `undefined`) {
