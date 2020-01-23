@@ -43,11 +43,12 @@ class Dnsserver {
                 };
             });
             return console.error(error);
-        };
-        if (true) {
-            return undefined;
-        } else {
-            return 1;
+        } finally {
+            if (true) {
+                return undefined;
+            } else {
+                return 1;
+            };
         };
     };
 

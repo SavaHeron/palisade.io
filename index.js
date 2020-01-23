@@ -10,7 +10,7 @@ Licence:	CC BY-NC-ND 4.0
 */
 
 const Dnsserver = require (`./dns`);
-//const App = require(`./app`);
+//const App = require(`./admin`);
 //const setup = require(`./setup`);
 const ip = require(`ip`);
 
@@ -28,15 +28,10 @@ const externalresolver2 = {
 	port: 53
 };
 
-//const appport1 = 80
+//const appport = 80
 
-//const appport2 = 8080
-
-/*const app1 = new App(appport1);
+/*const app1 = new App(appport);
 app1.startapp();*/
-
-/*const app2 = new App(appport2);
-app2.startapp();*/
 
 const dns1 = new Dnsserver(localip, 53,  externalresolver1);
 dns1.startserver();
