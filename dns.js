@@ -14,7 +14,7 @@ const dns = require(`native-dns`);
 const fs = require(`fs`);
 const mariadb = require(`mariadb`);
 const dt = require(`date-and-time`);
-const rp = require('request-promise');
+const rpn = require(`request-promise-native`);
 const pool = mariadb.createPool({
     host: "localhost",
     user: "root",
@@ -34,7 +34,7 @@ class Dnsserver {
 
     async analyseblock(domain) {  //not finished
         try {
-            let html = await rp(`http://${domain}`);
+            let html = await rpn(`http://${domain}`);
             console.log(html)
         } catch (error) {
             fs.appendFile(`./logs/error.log`, `${error}\n`, (error) => {
