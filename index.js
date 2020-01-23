@@ -34,5 +34,5 @@ app1.startapp();*/
 const dns1 = new Dnsserver(`10.0.0.1`, 53,  externalresolver1);
 dns1.startserver();
 
-const dns2 = new Server(`10.0.0.2`, 53, externalresolver2);
+const dns2 = new Dnsserver(`10.0.0.2`, 53, externalresolver2);
 dns2.startserver();
