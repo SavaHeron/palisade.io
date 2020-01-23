@@ -11,7 +11,7 @@ Licence:	CC BY-NC-ND 4.0
 
 const Dnsserver = require (`./dns`);
 //const App = require(`./admin`);
-const setup = require(`./setup`);
+//const setup = require(`./setup`);
 const ip = require(`ip`);
 
 const localip = ip.address();
