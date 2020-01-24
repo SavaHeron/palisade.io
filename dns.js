@@ -36,6 +36,7 @@ class Dnsserver {
         try {
             let html = await rpn(`http://${domain}`);
             console.log(html)
+            
         } catch (error) {
             fs.appendFile(`./logs/error.log`, `${error}\n`, (error) => {
                 if (error) {
@@ -44,7 +45,7 @@ class Dnsserver {
             });
             return console.error(error);
         } finally {
-            if (true) {
+            if (block != bad) {
                 return undefined;
             } else {
                 return 1;
