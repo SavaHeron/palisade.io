@@ -134,7 +134,7 @@ class Dnsserver {
         };
     };
 
-    async insertblock(domain) { //finished not tested
+    async insertblock(domain) { //finished
         try {
             let connection = await pool.getConnection();
             let rows = await connection.query(`INSERT INTO block (domain) VALUES ("${domain}")`);
@@ -150,7 +150,7 @@ class Dnsserver {
         };
     };
 
-    async checkinsertblock(domain) {    //finished not tested
+    async checkinsertblock(domain) {    //finished
         let block = await this.checkblock(domain);
         let analysis = await this.analyseblock(domain);
         if (typeof block != `undefined`) {
