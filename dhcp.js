@@ -37,3 +37,5 @@ class Dhcpserver {
         server.listen();
     };
 };
+
+module.exports = Dhcpserver;
