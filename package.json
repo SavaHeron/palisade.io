@@ -1,0 +1,33 @@
+{
+    "name": "development",
+    "version": "1.0.0",
+    "main": "index.js",
+    "directories": {
+        "test": "test"
+    },
+    "dependencies": {
+        "async": "^3.1.0",
+        "date-and-time": "^0.12.0",
+        "dhcp": "^0.2.18",
+        "ip": "^1.1.5",
+        "mariadb": "^2.1.4",
+        "native-dns": "^0.7.0",
+        "request": "^2.88.0",
+        "request-promise-native": "^1.0.8"
+    },
+    "devDependencies": {},
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/SavaHeron/palisade.io.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/SavaHeron/palisade.io/issues"
+    },
+    "homepage": "https://github.com/SavaHeron/palisade.io#readme",
+    "description": ""
+}
