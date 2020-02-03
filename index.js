@@ -15,16 +15,14 @@ const ip = require(`ip`);
 
 const localip = ip.address();
 
-const externalresolver1 = {
-	address: `1.1.1.1`,
-	type: `udp`,
-	port: 53
-};
+const externalresolver = `1.1.1.1`;
 
-//const appport = 80
+//const appport = 8080
 
-/*const app1 = new App(appport);
+/*const app1 = new App(localip);
 app1.startapp();*/
 
-const dns1 = new Dnsserver(localip, 53,  externalresolver1);
-dns1.startserver();
+const dns = new Dnsserver(localip, externalresolver);
+dns.startserver();
+
+const dhcp = new Dhcpserver(localip);
