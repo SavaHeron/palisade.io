@@ -26,3 +26,4 @@ const dns = new Dnsserver(localip, externalresolver);
 dns.startserver();
 
 const dhcp = new Dhcpserver(localip);
+dhcp.startserver();
