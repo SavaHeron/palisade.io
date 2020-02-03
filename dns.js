@@ -32,8 +32,16 @@ class Dnsserver {
 
     async analyseblock(domain) {  //not finished
         try {
-            let html = await rpn(`http://${domain}`);
-            console.log(html)
+            let params = {
+                uri: `https://api.apility.net/baddomain/${domain}`,
+                headers: {
+                    'X-Auth-Token': `b8187ab8-b907-4a0f-a647-f7e508ee0ce7`
+                },
+                json: true
+            };
+
+            let response = await rpn(params);
+            console.log(response)
 
         } catch (error) {
             fs.appendFile(`./logs/error.log`, `${error}\n`, (error) => {
