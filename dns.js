@@ -26,17 +26,15 @@ const pool = mariadb.createPool({
 const udpserver = dns.createUDPServer();
 
 class Dnsserver {
-    constructor(ip, port, resolver) {
+    constructor(ip) {
         this.serverip = ip;
-        this.serverport = port;
-        this.upstreamresolver = resolver;
     };
 
     async analyseblock(domain) {  //not finished
         try {
             let html = await rpn(`http://${domain}`);
             console.log(html)
-            
+
         } catch (error) {
             fs.appendFile(`./logs/error.log`, `${error}\n`, (error) => {
                 if (error) {
@@ -166,7 +164,11 @@ class Dnsserver {
     forwardquery(forwardedquestion, response, callback) {   //forwards the query to the upstream resolver - finished
         let forwardedrequest = dns.Request({
             question: forwardedquestion,
-            server: this.upstreamresolver,
+            server: {
+                address: this.upstreamresolver,
+                type: `udp`,
+                port: 53
+            },
             cache: false
         });
         forwardedrequest.on(`message`, (_error, message) => {
@@ -245,7 +247,7 @@ class Dnsserver {
     };
 
     startserver() {
-        udpserver.serve(this.serverport, this.serverip);
+        udpserver.serve(53, this.serverip);
 
         udpserver.on(`listening`, () => {
             fs.appendFile(`./logs/palisade.log`, `listening on ${this.serverip}:${this.serverport}\n`, (error) => {
