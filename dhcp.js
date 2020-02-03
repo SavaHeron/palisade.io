@@ -28,6 +28,7 @@ let server = dhcpd.createServer({
         '10.0.0.1'
     ],
     dns: `10.0.0.1`,
+    broadcast: `255.255.255.255`,
     server: '10.0.0.1',
 });
 
