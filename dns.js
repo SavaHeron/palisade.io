@@ -43,7 +43,7 @@ class Dnsserver {
             });
             return console.error(error);
         } finally {
-            if (block != bad) {
+            if (true/*block != bad*/) {
                 return undefined;
             } else {
                 return 1;
@@ -250,7 +250,7 @@ class Dnsserver {
         udpserver.serve(53, this.serverip);
 
         udpserver.on(`listening`, () => {
-            fs.appendFile(`./logs/palisade.log`, `listening on ${this.serverip}:${this.serverport}\n`, (error) => {
+            fs.appendFile(`./logs/palisade.log`, `listening on ${this.serverip}\n`, (error) => {
                 if (error) {
                     return console.error(error);
                 };
