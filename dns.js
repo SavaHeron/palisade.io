@@ -156,16 +156,20 @@ class Dnsserver {
         };
     };
 
-    async checkinsertblock(domain) {    //finished
-        let block = await this.checkblock(domain);
-        let analysis = await this.analyseblock(domain);
-        if (typeof block != `undefined`) {
-            return 1;
-        } else if (typeof analysis != `undefined`) {
-            this.insertblock(domain);
-            return 1;
+    async checkinsertblock(domain, querytype) {    //finished
+        if (querytype == 12) {
+            return 1
         } else {
-            return 0;
+            let block = await this.checkblock(domain);
+            let analysis = await this.analyseblock(domain);
+            if (typeof block != `undefined`) {
+                return 1;
+            } else if (typeof analysis != `undefined`) {
+                this.insertblock(domain);
+                return 1;
+            } else {
+                return 0;
+            };
         };
     };
 
@@ -190,8 +194,8 @@ class Dnsserver {
 
     async handlequery(request, response) {
         let i = [];
-        let block = await this.checkinsertblock(request.question[0].name);
         let querytype = JSON.stringify(request.question[0].type);
+        let block = await this.checkinsertblock(request.question[0].name, querytype);
         let cache = await this.checkcache(request.question[0].name, querytype);
         fs.appendFile(`./logs/palisade.log`, `${request.question[0].type} query for ${request.question[0].name} from ${request.address.address}\n`, (error) => {
             if (error) {
@@ -199,7 +203,7 @@ class Dnsserver {
             };
         });
         request.question.forEach(question => {
-            if (block == 1 || querytype == 12) { //executed if the domain should be blocked
+            if (block == 1) { //executed if the domain should be blocked
                 fs.appendFile(`./logs/palisade.log`, `blocking ${request.question[0].name}\n`, (error) => {
                     if (error) {
                         return console.error(error);
