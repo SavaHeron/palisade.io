@@ -9,7 +9,8 @@ Copyright:	(c) SMH 2019
 Licence:	CC BY-NC-ND 4.0
 */
 
-const Dnsserver = require (`./dns`);
+const Dnsserver = require(`./dns`);
+const Dhcpserver = require(`./dhcp`);
 //const App = require(`./admin`);
 const ip = require(`ip`);
 
