@@ -24,9 +24,7 @@ let server = dhcpd.createServer({
         "192.168.3.10", "192.168.3.99"
     ],
     netmask: '255.0.0.0',
-    router: [
-        '10.0.0.1'
-    ],
+    router: '10.0.0.1',
     dns: `10.0.0.1`,
     broadcast: `255.255.255.255`,
     server: '10.0.0.1',
