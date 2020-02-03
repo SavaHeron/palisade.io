@@ -11,13 +11,13 @@ Licence:	CC BY-NC-ND 4.0
 
 const dhcpd = require('dhcp');
 
-const pool = mariadb.createPool({
+/*const pool = mariadb.createPool({
     host: "localhost",
     user: "root",
     password: "9a_?KedofR-qewo",
     connectionLimit: 5,
     database: "palisadeio"
-});
+});*/
 
 let server = dhcpd.createServer({
     range: [
@@ -27,13 +27,18 @@ let server = dhcpd.createServer({
     router: [
         '10.0.0.1'
     ],
-    dns: ["10.0.0.1"],
+    dns: `10.0.0.1`,
     server: '10.0.0.1',
 });
 
 
 class Dhcpserver {
+    /*getvalues() {
+
+    };*/
+
     startserver() {
+        //this.getvalues();
         server.listen();
     };
 };
