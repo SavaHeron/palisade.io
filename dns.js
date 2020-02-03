@@ -199,7 +199,7 @@ class Dnsserver {
             };
         });
         request.question.forEach(question => {
-            if (block == 1) { //executed if the domain should be blocked
+            if (block == 1 || querytype == 12) { //executed if the domain should be blocked
                 fs.appendFile(`./logs/palisade.log`, `blocking ${request.question[0].name}\n`, (error) => {
                     if (error) {
                         return console.error(error);
@@ -263,7 +263,7 @@ class Dnsserver {
                     return console.error(error);
                 };
             });
-            return console.log(`listening on ${this.serverip}:${this.serverport}`);
+            return console.log(`listening on ${this.serverip}`);
         });
 
         udpserver.on(`close`, () => {
