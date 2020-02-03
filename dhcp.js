@@ -38,6 +38,7 @@ class Dhcpserver {
     };*/
 
     startserver() {
+        console.log(`started`);
         //this.getvalues();
         server.listen();
     };
