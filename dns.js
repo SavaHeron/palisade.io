@@ -42,7 +42,8 @@ class DNSServer {
                     headers: {
                         'X-Auth-Token': this.token
                     },
-                    json: true
+                    json: true,
+                    resolveWithFullResponse: true
                 };
                 let response = await rpn(params);
                 console.log(response.statusCode)
