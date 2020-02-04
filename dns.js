@@ -251,7 +251,6 @@ class DNSServer {
                 };
             } else {
                 i.push(callback => {
-                    console.log(this.forwardquery)
                     return this.forwardquery(question, response, callback);
                 });
             };
