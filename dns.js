@@ -26,25 +26,26 @@ const pool = mariadb.createPool({
 const udpserver = dns.createUDPServer();        //this creates the DNS server 
 
 class DNSServer {
-    constructor(ip, upstreamresolver) {
+    constructor(ip, upstreamresolver, token) {
         this.serverip = ip;
         this.upstreamresolver = upstreamresolver;
+        this.token = token;
     };
 
     async analyseblock(domain, querytype) {  //not finished
         if (querytype == 12) {      //this means that PTR records are not sent to the API
             return undefined;
         } else {
-            /*try {
+            try {
                 let params = {
                     uri: `https://api.apility.net/baddomain/${domain}`,
                     headers: {
-                        'X-Auth-Token': `b8187ab8-b907-4a0f-a647-f7e508ee0ce7`
+                        'X-Auth-Token': token
                     },
                     json: false
                 };
                 let response = await rpn(params);
-                console.log(response)
+                console.log(response.statusCode)
             } catch (error) {
                 fs.appendFile(`./logs/error.log`, `${error}\n`, (error) => {
                     if (error) {
@@ -52,11 +53,12 @@ class DNSServer {
                     };
                 });
                 return console.error(error);
-            } finally {*/
-            if (true/*block != bad*/) {
-                return undefined;
-            } else {
-                return 1;
+            } finally {
+                if (true/*block != bad*/) {
+                    return undefined;
+                } else {
+                    return 1;
+                };
             };
         };
     };
