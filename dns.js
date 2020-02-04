@@ -256,6 +256,7 @@ class DNSServer {
                         this.updateinsertcache(request.question[0].name, response, querytype, queryttl);
                     };
                 };
+                console.log(response);
                 return response.send();
             });
         });
