@@ -31,7 +31,7 @@ class DNSServer {
         this.upstreamresolver = upstreamresolver;
     };
 
-    async analyseblock(domain) {  //not finished
+    async analyseblock(domain, querytype) {  //not finished
         if (querytype == 12) {      //this means that PTR records are not sent to the API
             return undefined;
         } else {
