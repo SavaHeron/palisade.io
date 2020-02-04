@@ -206,7 +206,7 @@ class DNSServer {
             };
         });
         request.question.forEach(question => {
-            if (block == 1) { //executed if the domain should be blocked
+            if (false /*block == 1*/) { //executed if the domain should be blocked
                 fs.appendFile(`./logs/palisade.log`, `blocking ${request.question[0].name}\n`, (error) => {
                     if (error) {
                         return console.error(error);
