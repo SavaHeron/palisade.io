@@ -47,7 +47,8 @@ class DNSServer {
                     simple: false
                 };
                 let response = await rpn(params);
-                let bad = response.score;
+                var code = response.statusCode;
+                var bad = response.score;
                 console.log(response.score);
             } catch (error) {
                 fs.appendFile(`./logs/error.log`, `${error}\n`, (error) => {
@@ -57,7 +58,7 @@ class DNSServer {
                 });
                 return console.error(error);
             };
-            if (bad == 0) {
+            if (bad == 0 || code == 404) {
                 return undefined;
             } else {
                 return 1;
