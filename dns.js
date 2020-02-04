@@ -33,23 +33,22 @@ class DNSServer {
     };
 
     async analyseblock(domain, querytype) {  //not finished
-        if (querytype == 12) {      //this means that PTR records are not sent to the API
+        if (querytype == 12) {      //this stops PTR resource records from being sent to the API
             return undefined;
         } else {
             try {
                 let params = {
                     uri: `https://api.apility.net/baddomain/${domain}`,
                     headers: {
-                        'X-Auth-Token': this.token
+                        'X-Auth-Token': `b8187ab8-b907-4a0f-a647-f7e508ee0ce7`
                     },
-                    json: true,
+                    json: false,
                     resolveWithFullResponse: true,
                     simple: false
                 };
                 let response = await rpn(params);
                 var code = response.statusCode;
-                var bad = response.score;
-                console.log(response.score);
+                console.log(code);
             } catch (error) {
                 fs.appendFile(`./logs/error.log`, `${error}\n`, (error) => {
                     if (error) {
@@ -58,10 +57,18 @@ class DNSServer {
                 });
                 return console.error(error);
             };
-            if (bad == 0 || code == 404) {
-                return undefined;
-            } else {
-                return 1;
+            switch (code) {
+                case 404:
+                    return undefined;
+                case 200:
+                    return 1
+                default:
+                    fs.appendFile(`./logs/error.log`, `abnormal response from API (${code})\n`, (error) => {
+                        if (error) {
+                            return console.error(error);
+                        };
+                    });
+                    return console.error(`abnormal response from API (${code})`);
             };
         };
     };
