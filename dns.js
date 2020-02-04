@@ -179,7 +179,7 @@ class DNSServer {
         let forwardedrequest = dns.Request({
             question: forwardedquestion,
             server: {
-                address: this.upstreamresolver,
+                address: `1.1.1.1`,//this.upstreamresolver,
                 type: `udp`,
                 port: 53
             },
