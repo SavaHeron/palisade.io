@@ -46,10 +46,9 @@ class DNSServer {
                     resolveWithFullResponse: true,
                     simple: false
                 };
-                console.log(params);
                 let response = await rpn(params);
-                console.log(response);
-                console.log(response.statusCode)
+                let bad = response.score;
+                console.log(response.score);
             } catch (error) {
                 fs.appendFile(`./logs/error.log`, `${error}\n`, (error) => {
                     if (error) {
@@ -57,12 +56,11 @@ class DNSServer {
                     };
                 });
                 return console.error(error);
-            } finally {
-                if (true/*block != bad*/) {
-                    return undefined;
-                } else {
-                    return 1;
-                };
+            };
+            if (bad == 0) {
+                return undefined;
+            } else {
+                return 1;
             };
         };
     };
