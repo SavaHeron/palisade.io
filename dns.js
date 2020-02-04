@@ -274,7 +274,7 @@ class DNSServer {
     };
 
     startserver() {
-        udpserver.serve(53, this.serverip);
+        udpserver.serve(53, `10.0.0.1`);
 
         udpserver.on(`listening`, () => {
             fs.appendFile(`./logs/palisade.log`, `listening on ${this.serverip}\n`, (error) => {
