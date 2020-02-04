@@ -15,7 +15,7 @@ const fs = require(`fs`);
 const mariadb = require(`mariadb`);
 const dt = require(`date-and-time`);
 const rpn = require(`request-promise-native`);
-const pool = mariadb.createPool({
+const pool = mariadb.createPool({       //this creates the database pool which connections will use to add or update records through
     host: "localhost",
     user: "root",
     password: "9a_?KedofR-qewo",
@@ -23,7 +23,7 @@ const pool = mariadb.createPool({
     database: "palisadeio"
 });
 
-const udpserver = dns.createUDPServer();        //this creates the DNS server 
+const udpserver = dns.createUDPServer();        //this creates the DNS server using the native-dns module
 
 class DNSServer {
     constructor(ip, upstreamresolver, token) {
@@ -32,7 +32,7 @@ class DNSServer {
         this.token = token;
     };
 
-    async analyseblock(domain, querytype) {  //not finished
+    async analyseblock(domain, querytype) {  //finished
         if (querytype == 12) {      //this stops PTR resource records from being sent to the API
             return undefined;
         } else {
@@ -229,7 +229,7 @@ class DNSServer {
                         ttl: 1800
                     }));
                 });
-            /*} else if (typeof cache != `undefined`) {   //if the dns server has already cached the domain's ip
+            } else if (typeof cache != `undefined`) {   //if the dns server has already cached the domain's ip
                 let now = new Date();
                 let then = new Date(cache.retrieved);
                 let thenplusttl = dt.addSeconds(then, +cache.ttl);
@@ -248,7 +248,7 @@ class DNSServer {
                     i.push(callback => {
                         return this.forwardquery(question, response, callback);
                     });
-                };*/
+                };
             } else {
                 i.push(callback => {
                     console.log(this.forwardquery)
@@ -256,7 +256,7 @@ class DNSServer {
                 });
             };
             return async.parallel(i, () => {
-                /*if (block != 1 && valid != 1) {
+                if (block != 1 && valid != 1) {
                     if (response.answer.length != 0) {
                         fs.appendFile(`./logs/palisade.log`, `(re)caching ${response.question[0].name}\n`, (error) => {
                             if (error) {
@@ -266,7 +266,7 @@ class DNSServer {
                         let queryttl = JSON.stringify(response.answer[0].ttl);
                         this.updateinsertcache(request.question[0].name, response, querytype, queryttl);
                     };
-                };*/
+                };
                 console.log(response)
                 return response.send();
             });
