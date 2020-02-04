@@ -23,26 +23,25 @@ const pool = mariadb.createPool({
     database: "palisadeio"
 });
 
-const udpserver = dns.createUDPServer();
+const udpserver = dns.createUDPServer();        //this creates the DNS server 
 
-class Dnsserver {
+class DNSServer {
     constructor(ip) {
         this.serverip = ip;
     };
 
     async analyseblock(domain) {  //not finished
         try {
-            let params = {
+            /*let params = {
                 uri: `https://api.apility.net/baddomain/${domain}`,
                 headers: {
                     'X-Auth-Token': `b8187ab8-b907-4a0f-a647-f7e508ee0ce7`
                 },
-                json: true
+                json: false
             };
-
             let response = await rpn(params);
             console.log(response)
-
+*/
         } catch (error) {
             fs.appendFile(`./logs/error.log`, `${error}\n`, (error) => {
                 if (error) {
@@ -289,4 +288,4 @@ class Dnsserver {
     };
 };
 
-module.exports = Dnsserver;
+module.exports = DNSServer;
