@@ -15,6 +15,7 @@ const fs = require(`fs`);
 const mariadb = require(`mariadb`);
 const dt = require(`date-and-time`);
 const rpn = require(`request-promise-native`);
+
 const pool = mariadb.createPool({       //this creates the database pool which connections will use to add or update records through
     host: "localhost",
     user: "root",
@@ -32,22 +33,22 @@ class DNSServer {
         this.token = token;
     };
 
-    async analyseblock(domain, querytype) {  //finished
+    async analyseblock(domain, querytype) {  //this sends the domain to an API to tell us if it is good or bad
         if (querytype == 12) {      //this stops PTR resource records from being sent to the API
             return undefined;
         } else {
             try {
-                let params = {
+                let params = {      //this sets the parameters for the GET request to the API
                     uri: `https://api.apility.net/baddomain/${domain}`,
                     headers: {
-                        'X-Auth-Token': `b8187ab8-b907-4a0f-a647-f7e508ee0ce7`
+                        'X-Auth-Token': `b8187ab8-b907-4a0f-a647-f7e508ee0ce7`      //this is where the API key lives
                     },
                     json: false,
                     resolveWithFullResponse: true,
                     simple: false
                 };
-                let response = await rpn(params);
-                var code = response.statusCode;
+                let response = await rpn(params);       //this actually makes the GET request to the API
+                var code = response.statusCode;     //this is just the HTTP response code from the GET request
             } catch (error) {
                 fs.appendFile(`./logs/error.log`, `${error}\n`, (error) => {
                     if (error) {
@@ -57,11 +58,11 @@ class DNSServer {
                 return console.error(error);
             };
             switch (code) {
-                case 404:
+                case 404:       //this means that the domain is good and doesn't need to be blocked
                     return undefined;
-                case 200:
+                case 200:       //this means that the domain is bad and needs to be blocked
                     return 1
-                default:
+                default:        //this means that something hasn't worked properly (the response from the API is abnormal)
                     fs.appendFile(`./logs/error.log`, `abnormal response from API (${code})\n`, (error) => {
                         if (error) {
                             return console.error(error);
@@ -72,7 +73,7 @@ class DNSServer {
         };
     };
 
-    async checkcache(domain, type) {  //finished
+    async checkcache(domain, type) {  //this looks in the cache table for the domain and returns the rows
         try {
             let connection = await pool.getConnection();
             let rows = await connection.query(`SELECT * FROM cache WHERE domain LIKE "${domain}" AND type LIKE ${type}`);
@@ -88,7 +89,7 @@ class DNSServer {
         };
     };
 
-    async updatecache(domain, response, type, ttl) { //finished
+    async updatecache(domain, response, type, ttl) { //this updates the cache table with the new IP
         try {
             let connection = await pool.getConnection();
             let record = [];
@@ -107,7 +108,7 @@ class DNSServer {
         };
     };
 
-    async insertcache(domain, response, type, ttl) { //finished
+    async insertcache(domain, response, type, ttl) { //this inserts a new domain into the cache table
         try {
             let connection = await pool.getConnection();
             let record = [];
@@ -126,7 +127,7 @@ class DNSServer {
         };
     };
 
-    async updateinsertcache(domain, response, type, ttl) {   //finished
+    async updateinsertcache(domain, response, type, ttl) {   //this uses the updatecache and insertcache functions 
         if (type == 12) {      //this means that PTR records are not checked in the cache
             return undefined;
         } else {
@@ -141,7 +142,7 @@ class DNSServer {
         };
     };
 
-    async checkblock(domain) {  //finished
+    async checkblock(domain) {  //this checks if domains are in the block table
         try {
             let connection = await pool.getConnection();
             let rows = await connection.query(`SELECT * FROM block WHERE domain LIKE "${domain}"`);
@@ -157,7 +158,7 @@ class DNSServer {
         };
     };
 
-    async insertblock(domain) { //finished
+    async insertblock(domain) { //this inserts new domains into the block table
         try {
             let connection = await pool.getConnection();
             let rows = await connection.query(`INSERT INTO block (domain) VALUES ("${domain}")`);
@@ -173,7 +174,7 @@ class DNSServer {
         };
     };
 
-    async checkinsertblock(domain, querytype) {    //finished
+    async checkinsertblock(domain, querytype) {    //this checks if the domain is blocked, is supposed to be block or neither - uses analyseblock and checkblock to determine this
         let block = await this.checkblock(domain);
         let analysis = await this.analyseblock(domain, querytype);
         if (typeof block != `undefined`) {
@@ -186,7 +187,7 @@ class DNSServer {
         };
     };
 
-    forwardquery(forwardedquestion, response, callback) {   //forwards the query to the upstream resolver - finished
+    forwardquery(forwardedquestion, response, callback) {   //forwards the query to the upstream resolver
         let forwardedrequest = dns.Request({
             question: forwardedquestion,
             server: {
@@ -205,7 +206,7 @@ class DNSServer {
         return forwardedrequest.send();
     };
 
-    async handlequery(request, response) {
+    async handlequery(request, response) {      //every query made to the DNS server 
         let i = [];
         let querytype = JSON.stringify(request.question[0].type);
         let block = await this.checkinsertblock(request.question[0].name, querytype);
@@ -235,7 +236,7 @@ class DNSServer {
                 let thenplusttl = dt.addSeconds(then, +cache.ttl);
                 if (now.getTime() < thenplusttl.getTime()) {    //if the record is valid
                     var valid = 1
-                    request.question.forEach(() => {
+                    request.question.forEach(() => {        //this answers each query with the relevant record from the cache table
                         let answer = JSON.parse(cache.record);
                         if (answer[1].length == 1) {
                             return response.answer.push(answer[1][0]);
@@ -245,34 +246,32 @@ class DNSServer {
                     });
                 } else {    //if the record is not valid
                     var valid = 0;
-                    i.push(callback => {
+                    i.push(callback => {        //this results in the domain being refetched
                         return this.forwardquery(question, response, callback);
                     });
                 };
             } else {
-                i.push(callback => {
+                i.push(callback => {        //this happens if the domain wasn't in the cache at all
                     return this.forwardquery(question, response, callback);
                 });
             };
             return async.parallel(i, () => {
-                if (block != 1 && valid != 1) {
-                    if (response.answer.length != 0) {
-                        fs.appendFile(`./logs/palisade.log`, `(re)caching ${response.question[0].name}\n`, (error) => {
-                            if (error) {
-                                return console.error(error);
-                            };
-                        });
-                        let queryttl = JSON.stringify(response.answer[0].ttl);
-                        this.updateinsertcache(request.question[0].name, response, querytype, queryttl);
-                    };
+                if (block != 1 && valid != 1 && response.answer.length != 0) {      //this checks to make sure the domain isn't block and currently valid then (re)caches the domain
+                    fs.appendFile(`./logs/palisade.log`, `(re)caching ${response.question[0].name}\n`, (error) => {
+                        if (error) {
+                            return console.error(error);
+                        };
+                    });
+                    let queryttl = JSON.stringify(response.answer[0].ttl);
+                    this.updateinsertcache(request.question[0].name, response, querytype, queryttl);
                 };
                 console.log(response)
-                return response.send();
+                return response.send();     //this sends the response to the client
             });
         });
     };
 
-    startserver() {
+    startserver() {     //this is called in index.js to create the DNS server
         udpserver.serve(53, `10.0.0.1`);
 
         udpserver.on(`listening`, () => {
@@ -288,7 +287,7 @@ class DNSServer {
             return console.log(`closed`);
         });
 
-        udpserver.on(`request`, (request, response) => {
+        udpserver.on(`request`, (request, response) => {        //this fires everytime there is a query made to the DNS server
             return this.handlequery(request, response);
         });
 
@@ -303,4 +302,4 @@ class DNSServer {
     };
 };
 
-module.exports = DNSServer;
+module.exports = DNSServer;     //this exports the class so it can be used in index.js
