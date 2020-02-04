@@ -42,7 +42,7 @@ class DNSServer {
                     headers: {
                         'X-Auth-Token': this.token
                     },
-                    json: false
+                    json: true
                 };
                 let response = await rpn(params);
                 console.log(response.statusCode)
