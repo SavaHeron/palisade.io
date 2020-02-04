@@ -46,7 +46,9 @@ class DNSServer {
                     resolveWithFullResponse: true,
                     simple: false
                 };
+                console.log(params);
                 let response = await rpn(params);
+                console.log(response);
                 console.log(response.statusCode)
             } catch (error) {
                 fs.appendFile(`./logs/error.log`, `${error}\n`, (error) => {
