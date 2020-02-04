@@ -40,7 +40,7 @@ class DNSServer {
                 let params = {
                     uri: `https://api.apility.net/baddomain/${domain}`,
                     headers: {
-                        'X-Auth-Token': token
+                        'X-Auth-Token': this.token
                     },
                     json: false
                 };
