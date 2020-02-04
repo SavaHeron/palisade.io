@@ -121,13 +121,17 @@ class DNSServer {
     };
 
     async updateinsertcache(domain, response, type, ttl) {   //finished
-        let cache = await this.checkcache(domain, type);
-        if (typeof cache != `undefined`) {
-            let rows = this.updatecache(domain, response, type, ttl);
-            return rows;
+        if (querytype == 12) {      //this means that PTR records are not checked in the cache
+            return undefined;
         } else {
-            let rows = this.insertcache(domain, response, type, ttl)
-            return rows;
+            let cache = await this.checkcache(domain, type);
+            if (typeof cache != `undefined`) {
+                let rows = this.updatecache(domain, response, type, ttl);
+                return rows;
+            } else {
+                let rows = this.insertcache(domain, response, type, ttl)
+                return rows;
+            };
         };
     };
 
@@ -256,7 +260,6 @@ class DNSServer {
                         this.updateinsertcache(request.question[0].name, response, querytype, queryttl);
                     };
                 };
-                console.log(response);
                 return response.send();
             });
         });
