@@ -48,7 +48,6 @@ class DNSServer {
                 };
                 let response = await rpn(params);
                 var code = response.statusCode;
-                console.log(code);
             } catch (error) {
                 fs.appendFile(`./logs/error.log`, `${error}\n`, (error) => {
                     if (error) {
@@ -230,7 +229,7 @@ class DNSServer {
                         ttl: 1800
                     }));
                 });
-            } else if (typeof cache != `undefined`) {   //if the dns server has already cached the domain's ip
+            /*} else if (typeof cache != `undefined`) {   //if the dns server has already cached the domain's ip
                 let now = new Date();
                 let then = new Date(cache.retrieved);
                 let thenplusttl = dt.addSeconds(then, +cache.ttl);
@@ -249,14 +248,15 @@ class DNSServer {
                     i.push(callback => {
                         return this.forwardquery(question, response, callback);
                     });
-                };
+                };*/
             } else {
                 i.push(callback => {
+                    console.log(this.forwardquery)
                     return this.forwardquery(question, response, callback);
                 });
             };
             return async.parallel(i, () => {
-                if (/*block != 1 && */valid != 1) {
+                /*if (block != 1 && valid != 1) {
                     if (response.answer.length != 0) {
                         fs.appendFile(`./logs/palisade.log`, `(re)caching ${response.question[0].name}\n`, (error) => {
                             if (error) {
@@ -266,7 +266,8 @@ class DNSServer {
                         let queryttl = JSON.stringify(response.answer[0].ttl);
                         this.updateinsertcache(request.question[0].name, response, querytype, queryttl);
                     };
-                };
+                };*/
+                console.log(response)
                 return response.send();
             });
         });
