@@ -18,12 +18,14 @@ const localip = ip.address();
 
 const externalresolver = `1.1.1.1`;
 
+const token = `b8187ab8-b907-4a0f-a647-f7e508ee0ce7`;
+
 //const appport = 8080
 
 /*const app1 = new App(localip);
 app1.startapp();*/
 
-const dns = new Dnsserver(localip, externalresolver);
+const dns = new Dnsserver(localip, externalresolver), token;
 dns.startserver();
 
 const dhcp = new Dhcpserver(localip);
