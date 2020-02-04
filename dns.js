@@ -245,7 +245,7 @@ class DNSServer {
                 });
             };
             return async.parallel(i, () => {
-                if (block != 1 && valid != 1) {
+                if (/*block != 1 && */valid != 1) {
                     if (response.answer.length != 0) {
                         fs.appendFile(`./logs/palisade.log`, `(re)caching ${response.question[0].name}\n`, (error) => {
                             if (error) {
