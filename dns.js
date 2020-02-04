@@ -128,7 +128,7 @@ class DNSServer {
     };
 
     async updateinsertcache(domain, response, type, ttl) {   //finished
-        if (querytype == 12) {      //this means that PTR records are not checked in the cache
+        if (type == 12) {      //this means that PTR records are not checked in the cache
             return undefined;
         } else {
             let cache = await this.checkcache(domain, type);
@@ -209,7 +209,7 @@ class DNSServer {
     async handlequery(request, response) {
         let i = [];
         let querytype = JSON.stringify(request.question[0].type);
-        //let block = await this.checkinsertblock(request.question[0].name, querytype);
+        let block = await this.checkinsertblock(request.question[0].name, querytype);
         let cache = await this.checkcache(request.question[0].name, querytype);
         fs.appendFile(`./logs/palisade.log`, `${request.question[0].type} query for ${request.question[0].name} from ${request.address.address}\n`, (error) => {
             if (error) {
@@ -217,7 +217,7 @@ class DNSServer {
             };
         });
         request.question.forEach(question => {
-            if (false /*block == 1*/) { //executed if the domain should be blocked
+            if (block == 1) { //executed if the domain should be blocked
                 fs.appendFile(`./logs/palisade.log`, `blocking ${request.question[0].name}\n`, (error) => {
                     if (error) {
                         return console.error(error);
