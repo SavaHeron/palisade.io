@@ -9,17 +9,15 @@ Copyright:	(c) SMH 2020
 Licence:	CC BY-NC-ND 4.0
 */
 
-var express = require('express');
-const mysql = require('mysql');
-const mariadb = require(`mariadb`);
+const express = require('express');
 const app = express();
+
 app.set('view engine', 'pug');
 app.use(express.static(__dirname + '/public'));
 
-const pool = mariadb.createPool({
-    host: "localhost",
-    user: "root",
-    password: "9a_?KedofR-qewo",
-    connectionLimit: 5,
-    database: "palisadeio"
+app.get('/', function (_req, resp) {
+    resp.status(200);
+    resp.send(`OK`);
 });
+
+app.listen(80);
