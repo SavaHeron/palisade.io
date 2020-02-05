@@ -109,7 +109,7 @@ class DNSServer {
 
     async insertcache(domain, response, type, ttl) { //this inserts a new domain into the cache table
         try {
-            let connection = await pool.getConnection();
+            let connection = await this.pool.getConnection();
             let record = [];
             record.push(response.question);
             record.push(response.answer);
@@ -249,8 +249,8 @@ class DNSServer {
                         return this.forwardquery(question, response, callback);
                     });
                 };
-            } else {
-                i.push(callback => {        //this happens if the domain wasn't in the cache at all
+            } else {        //this happens if the domain wasn't in the cache at all
+                i.push(callback => {        
                     return this.forwardquery(question, response, callback);
                 });
             };
@@ -262,9 +262,8 @@ class DNSServer {
                         };
                     });
                     let queryttl = JSON.stringify(response.answer[0].ttl);
-                    this.updateinsertcache(request.question[0].name, response, querytype, queryttl);
+                    this.updateinsertcache(request.question[0].name, response, querytype, queryttl);        //this works out whether to insert into or update the cache
                 };
-                console.log(response)
                 return response.send();     //this sends the response to the client
             });
         });
@@ -290,8 +289,8 @@ class DNSServer {
             return this.handlequery(request, response);
         });
 
-        udpserver.on(`error`, (error, _message, _response) => {
-            fs.appendFile(`./logs/error.log`, `${error.stack}\n`, (error) => {
+        udpserver.on(`error`, (error, _message, _response) => {     //this only fires if there is an error (very rarely)
+            fs.appendFile(`./logs/error.log`, `${error.stack}\n`, (error) => {      //this logs the error to error.log
                 if (error) {
                     return console.error(error);
                 };
