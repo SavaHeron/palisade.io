@@ -9,17 +9,16 @@ Copyright:	(c) SMH 2019
 Licence:	CC BY-NC-ND 4.0
 */
 
-const mariadb = require(`mariadb`);
-const util = require(`util`);
-const exec = util.promisify(require(`child_process`).exec);
-const ip = require(`ip`);
+//const mariadb = require(`mariadb`);
+//const util = require(`util`);
+//const exec = util.promisify(require(`child_process`).exec);
 const Dnsserver = require(`./dns`);
 const Dhcpserver = require(`./dhcp`);
 //const App = require(`./admin`);
 
 const dbuser = `root`;
 const dbpassword = `9a_?KedofR-qewo`;
-const localip = ip.address();
+const localip = `10.0.0.1`;
 const resolver = `1.1.1.1`;
 const apikey = `b8187ab8-b907-4a0f-a647-f7e508ee0ce7`;
 
