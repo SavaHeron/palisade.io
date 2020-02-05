@@ -16,18 +16,17 @@ const mariadb = require(`mariadb`);
 const dt = require(`date-and-time`);
 const rpn = require(`request-promise-native`);
 
-const pool = mariadb.createPool({       //this creates the database pool which connections will use to add or update records through
-    host: "localhost",
-    user: "root",
-    password: "9a_?KedofR-qewo",
-    connectionLimit: 5,
-    database: "palisadeio"
-});
-
 const udpserver = dns.createUDPServer();        //this creates the DNS server using the native-dns module
 
 class DNSServer {
-    constructor(ip, upstreamresolver, token) {
+    constructor(dbuser, dbpassword, ip, upstreamresolver, token) {
+        this.pool = mariadb.createPool({       //this creates the database pool which connections will use to add or update records through
+            host: `localhost`,
+            user: dbuser,
+            password: dbpassword,
+            connectionLimit: 5,
+            database: `palisadeio`
+        });
         this.serverip = ip;
         this.upstreamresolver = upstreamresolver;
         this.token = token;
@@ -75,7 +74,7 @@ class DNSServer {
 
     async checkcache(domain, type) {  //this looks in the cache table for the domain and returns the rows
         try {
-            let connection = await pool.getConnection();
+            let connection = await this.pool.getConnection();
             let rows = await connection.query(`SELECT * FROM cache WHERE domain LIKE "${domain}" AND type LIKE ${type}`);
             connection.end();
             return rows[0];
@@ -91,7 +90,7 @@ class DNSServer {
 
     async updatecache(domain, response, type, ttl) { //this updates the cache table with the new IP
         try {
-            let connection = await pool.getConnection();
+            let connection = await this.pool.getConnection();
             let record = [];
             record.push(response.question);
             record.push(response.answer);
@@ -144,7 +143,7 @@ class DNSServer {
 
     async checkblock(domain) {  //this checks if domains are in the block table
         try {
-            let connection = await pool.getConnection();
+            let connection = await this.pool.getConnection();
             let rows = await connection.query(`SELECT * FROM block WHERE domain LIKE "${domain}"`);
             connection.end();
             return rows[0];
@@ -160,7 +159,7 @@ class DNSServer {
 
     async insertblock(domain) { //this inserts new domains into the block table
         try {
-            let connection = await pool.getConnection();
+            let connection = await this.pool.getConnection();
             let rows = await connection.query(`INSERT INTO block (domain) VALUES ("${domain}")`);
             connection.end();
             return rows;
@@ -272,7 +271,7 @@ class DNSServer {
     };
 
     startserver() {     //this is called in index.js to create the DNS server
-        udpserver.serve(53, `10.0.0.1`);
+        udpserver.serve(53, this.serverip);
 
         udpserver.on(`listening`, () => {
             fs.appendFile(`./logs/palisade.log`, `listening on ${this.serverip}\n`, (error) => {

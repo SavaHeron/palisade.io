@@ -11,34 +11,22 @@ Licence:	CC BY-NC-ND 4.0
 
 const dhcpd = require('dhcp');
 
-/*const pool = mariadb.createPool({
-    host: "localhost",
-    user: "root",
-    password: "9a_?KedofR-qewo",
-    connectionLimit: 5,
-    database: "palisadeio"
-});*/
-
-let server = dhcpd.createServer({
-    range: [
-        "192.168.3.10", "192.168.3.99"
-    ],
-    netmask: '255.0.0.0',
-    router: '10.0.0.1',
-    dns: `10.0.0.1`,
-    broadcast: `255.255.255.255`,
-    server: '10.0.0.1',
-});
-
-
 class Dhcpserver {
-    /*getvalues() {
-
-    };*/
+    constructor(beginrange, endrange, netmask, ip) {
+        this.server = dhcpd.createServer({
+            range: [
+                beginrange, endrange
+            ],
+            netmask: netmask,
+            router: ip,
+            dns: ip,
+            broadcast: `255.255.255.255`,
+            server: ip,
+        });
+    };
 
     startserver() {
-        //this.getvalues();
-        server.listen();
+        this.server.listen();
     };
 };
 
