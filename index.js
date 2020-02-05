@@ -10,6 +10,8 @@ Licence:	CC BY-NC-ND 4.0
 */
 
 const mariadb = require(`mariadb`);
+const util = require(`util`);
+const exec = util.promisify(require(`child_process`).exec);
 const ip = require(`ip`);
 const Dnsserver = require(`./dns`);
 const Dhcpserver = require(`./dhcp`);
