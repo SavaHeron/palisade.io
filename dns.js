@@ -40,14 +40,27 @@ class DNSServer {
                 let params = {      //this sets the parameters for the GET request to the API
                     uri: `https://api.apility.net/baddomain/${domain}`,
                     headers: {
-                        'X-Auth-Token': `b8187ab8-b907-4a0f-a647-f7e508ee0ce7`      //this is where the API key lives
+                        'X-Auth-Token': this.token      //this is where the API key lives
                     },
                     json: false,
                     resolveWithFullResponse: true,
                     simple: false
                 };
                 let response = await rpn(params);       //this actually makes the GET request to the API
-                var code = response.statusCode;     //this is just the HTTP response code from the GET request
+                let code = response.statusCode;     //this is just the HTTP response code from the GET request
+                switch (code) {
+                    case 404:       //this means that the domain is good and doesn't need to be blocked
+                        return undefined;
+                    case 200:       //this means that the domain is bad and needs to be blocked
+                        return 1
+                    default:        //this means that something hasn't worked properly (the response from the API is abnormal)
+                        fs.appendFile(`./logs/error.log`, `abnormal response from API (${code})\n`, (error) => {
+                            if (error) {
+                                return console.error(error);
+                            };
+                        });
+                        return console.error(`abnormal response from API (${code})`);
+                };
             } catch (error) {
                 fs.appendFile(`./logs/error.log`, `${error}\n`, (error) => {
                     if (error) {
@@ -55,19 +68,6 @@ class DNSServer {
                     };
                 });
                 return console.error(error);
-            };
-            switch (code) {
-                case 404:       //this means that the domain is good and doesn't need to be blocked
-                    return undefined;
-                case 200:       //this means that the domain is bad and needs to be blocked
-                    return 1
-                default:        //this means that something hasn't worked properly (the response from the API is abnormal)
-                    fs.appendFile(`./logs/error.log`, `abnormal response from API (${code})\n`, (error) => {
-                        if (error) {
-                            return console.error(error);
-                        };
-                    });
-                    return console.error(`abnormal response from API (${code})`);
             };
         };
     };
@@ -250,7 +250,7 @@ class DNSServer {
                     });
                 };
             } else {        //this happens if the domain wasn't in the cache at all
-                i.push(callback => {        
+                i.push(callback => {
                     return this.forwardquery(question, response, callback);
                 });
             };
