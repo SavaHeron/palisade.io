@@ -14,7 +14,7 @@ Licence:	CC BY-NC-ND 4.0
 //const exec = util.promisify(require(`child_process`).exec);
 const DNSServer = require(`./dns`);
 const DHCPServer = require(`./dhcp`);
-//const App = require(`./admin`);
+const admin = require(`./admin`);
 
 const dbuser = `root`;
 const dbpassword = `9a_?KedofR-qewo`;
