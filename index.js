@@ -9,25 +9,144 @@ Copyright:	(c) SMH 2019
 Licence:	CC BY-NC-ND 4.0
 */
 
-//const mariadb = require(`mariadb`);
 const util = require(`util`);
 const exec = util.promisify(require(`child_process`).exec);
+const fs = require(`fs`);
+const mariadb = require(`mariadb`);
 const DNSServer = require(`./dns`);
 const DHCPServer = require(`./dhcp`);
-const admin = require(`./admin`);
+//const admin = require(`./admin`);
 
 const dbuser = `root`;
 const dbpassword = `9a_?KedofR-qewo`;
-const localip = `10.0.0.1`;
-const resolver = `1.1.1.1`;
-const apikey = `b8187ab8-b907-4a0f-a647-f7e508ee0ce7`;
-const dns = new DNSServer(dbuser, dbpassword, localip, resolver, apikey);
+//const localip = `10.0.0.1`;
+//const resolver = `1.1.1.1`;
+//const apikey = `b8187ab8-b907-4a0f-a647-f7e508ee0ce7`;
 
-const beginrange = `192.168.3.10`;
-const endrange = `192.168.3.99`;
-const netmask = '255.0.0.0';
-const broadcast = `10.255.255.255`;
-const dhcp = new DHCPServer(beginrange, endrange, netmask, localip);
+//const beginrange = `192.168.3.10`;
+//const endrange = `192.168.3.99`;
+//const netmask = '255.0.0.0';
+//const broadcast = `10.255.255.255`;
+
+const pool = mariadb.createPool({
+    host: `localhost`,
+    user: dbuser,
+    password: dbpassword,
+    connectionLimit: 5,
+    database: `palisadeio`
+});
+
+async function getlocalip() {
+    try {
+        let connection = await pool.getConnection();
+        let rows = await connection.query(`SELECT value FROM settings WHERE attribute LIKE "localip"`);
+        connection.end();
+        return rows[0];
+    } catch (error) {
+        fs.appendFile(`./logs/error.log`, `${error}\n`, (error) => {
+            if (error) {
+                return console.error(error);
+            };
+        });
+        return console.error(error);
+    };
+};
+
+async function getresolver() {
+    try {
+        let connection = await pool.getConnection();
+        let rows = await connection.query(`SELECT value FROM settings WHERE attribute LIKE "resolver"`);
+        connection.end();
+        return rows[0];
+    } catch (error) {
+        fs.appendFile(`./logs/error.log`, `${error}\n`, (error) => {
+            if (error) {
+                return console.error(error);
+            };
+        });
+        return console.error(error);
+    };
+};
+
+async function getapikey() {
+    try {
+        let connection = await pool.getConnection();
+        let rows = await connection.query(`SELECT value FROM settings WHERE attribute LIKE "apikey"`);
+        connection.end();
+        return rows[0];
+    } catch (error) {
+        fs.appendFile(`./logs/error.log`, `${error}\n`, (error) => {
+            if (error) {
+                return console.error(error);
+            };
+        });
+        return console.error(error);
+    };
+};
+
+async function getbeginrange() {
+    try {
+        let connection = await pool.getConnection();
+        let rows = await connection.query(`SELECT value FROM settings WHERE attribute LIKE "beginrange"`);
+        connection.end();
+        return rows[0];
+    } catch (error) {
+        fs.appendFile(`./logs/error.log`, `${error}\n`, (error) => {
+            if (error) {
+                return console.error(error);
+            };
+        });
+        return console.error(error);
+    };
+};
+
+async function getendrange() {
+    try {
+        let connection = await pool.getConnection();
+        let rows = await connection.query(`SELECT value FROM settings WHERE attribute LIKE "endrange"`);
+        connection.end();
+        return rows[0];
+    } catch (error) {
+        fs.appendFile(`./logs/error.log`, `${error}\n`, (error) => {
+            if (error) {
+                return console.error(error);
+            };
+        });
+        return console.error(error);
+    };
+};
+
+async function getnetmask() {
+    try {
+        let connection = await pool.getConnection();
+        let rows = await connection.query(`SELECT value FROM settings WHERE attribute LIKE "netmask"`);
+        connection.end();
+        return rows[0];
+    } catch (error) {
+        fs.appendFile(`./logs/error.log`, `${error}\n`, (error) => {
+            if (error) {
+                return console.error(error);
+            };
+        });
+        return console.error(error);
+    };
+};
+
+async function getbroadcast() {
+    try {
+        let connection = await pool.getConnection();
+        let rows = await connection.query(`SELECT value FROM settings WHERE attribute LIKE "broadcast"`);
+        connection.end();
+        return rows[0];
+    } catch (error) {
+        fs.appendFile(`./logs/error.log`, `${error}\n`, (error) => {
+            if (error) {
+                return console.error(error);
+            };
+        });
+        return console.error(error);
+    };
+};
 
 async function setnameserver(resolver) {
     try {
@@ -49,7 +168,7 @@ async function setnat() {
     };
 };
 
-async function setstaticip(localip) {
+async function setstaticip(localip, broadcast) {
     try {
         const { stdout, stderr } = await exec(`sudo ip addr add ${localip}/8 dev eth0 broadcast ${broadcast} | sudo route add -host 255.255.255.255 eth0`);
         console.log(`stdout:`, stdout);
@@ -59,16 +178,30 @@ async function setstaticip(localip) {
     };
 };
 
+async function start() {
+    //get params from database
+    const localip = await getlocalip();
+    const resolver = await getresolver();
+    const apikey = await getapikey();
+    const beginrange = await getbeginrange();
+    const endrange = await getendrange();
+    const netmask = await getnetmask();
+    const broadcast = await getbroadcast();
 
-function start() {
+    //setup network environment
     setnameserver(resolver);
     setnat();
-    setstaticip(localip);
+    setstaticip(localip, broadcast);
+
+    //define DNS, DHCP and web servers
+    const dns = new DNSServer(dbuser, dbpassword, localip, resolver, apikey);
+    const dhcp = new DHCPServer(beginrange, endrange, netmask, localip);
+    //const admin = new admin(localip);
+
+    //start DNS, DHCP and web servers
     dns.startserver();
     dhcp.startserver();
+    //admin.startserver();
 };
 
-/*const app1 = new App(localip);
-app1.startapp();*/
-
-start();
+start();        //this starts the solution 
