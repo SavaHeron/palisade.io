@@ -180,16 +180,16 @@ async function start() {
     const netmask = await getnetmask();
     const broadcast = await getbroadcast();
 
-    const strlocalip = JSON.stringify(Object.values(localip.value))
-    const strresolver = JSON.stringify(Object.values(resolver.value))
-    const strapikey = JSON.stringify(Object.values(apikey.value))
-    const strbeginrange = JSON.stringify(Object.values(beginrange.value))
-    const strendrange = JSON.stringify(Object.values(endrange.value))
-    const strnetmask = JSON.stringify(Object.values(netmask.value))
-    const strbroadcast = JSON.stringify(Object.values(broadcast.value))
+    const strlocalip = JSON.stringify(localip.value);
+    const strresolver = JSON.stringify(resolver.value);
+    const strapikey = JSON.stringify(apikey.value);
+    const strbeginrange = JSON.stringify(beginrange.value);
+    const strendrange = JSON.stringify(endrange.value);
+    const strnetmask = JSON.stringify(netmask.value);
+    const strbroadcast = JSON.stringify(broadcast.value);
 
     //setup network environment
-    console.log(strresolver)
+    console.log(strresolver);
     setnameserver(strresolver);
     setnat();
     setstaticip(strlocalip, strbroadcast);
