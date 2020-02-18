@@ -146,7 +146,7 @@ async function setnameserver(resolver) {
         console.log(`stdout:`, stdout);
         console.log(`stderr:`, stderr);
     } catch (error) {
-        console.error(err);
+        console.error(error);
     };
 };
 
@@ -156,7 +156,7 @@ async function setnat() {
         console.log(`stdout:`, stdout);
         console.log(`stderr:`, stderr);
     } catch (error) {
-        console.error(err);
+        console.error(error);
     };
 };
 
@@ -166,7 +166,7 @@ async function setstaticip(localip, broadcast) {
         console.log(`stdout:`, stdout);
         console.log(`stderr:`, stderr);
     } catch (error) {
-        console.error(err);
+        console.error(error);
     };
 };
 
@@ -189,6 +189,7 @@ async function start() {
     const strbroadcast = JSON.stringify(Object.values(broadcast.value))
 
     //setup network environment
+    console.log(strresolver)
     setnameserver(strresolver);
     setnat();
     setstaticip(strlocalip, strbroadcast);
