@@ -19,14 +19,6 @@ const DHCPServer = require(`./dhcp`);
 
 const dbuser = `root`;
 const dbpassword = `9a_?KedofR-qewo`;
-//const localip = `10.0.0.1`;
-//const resolver = `1.1.1.1`;
-//const apikey = `b8187ab8-b907-4a0f-a647-f7e508ee0ce7`;
-
-//const beginrange = `192.168.3.10`;
-//const endrange = `192.168.3.99`;
-//const netmask = '255.0.0.0';
-//const broadcast = `10.255.255.255`;
 
 const pool = mariadb.createPool({
     host: `localhost`,
@@ -194,13 +186,13 @@ async function start() {
     setstaticip(localip, broadcast);
 
     //define DNS, DHCP and web servers
-    const dns = new DNSServer(dbuser, dbpassword, localip, resolver, apikey);
-    const dhcp = new DHCPServer(beginrange, endrange, netmask, localip);
+    //const dns = new DNSServer(dbuser, dbpassword, localip, resolver, apikey);
+    //const dhcp = new DHCPServer(beginrange, endrange, netmask, localip);
     //const admin = new admin(localip);
 
     //start DNS, DHCP and web servers
-    dns.startserver();
-    dhcp.startserver();
+    console.log(netmask);//dns.startserver();
+    //dhcp.startserver();
     //admin.startserver();
 };
 
