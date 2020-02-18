@@ -189,7 +189,7 @@ async function start() {
     const strbroadcast = JSON.stringify(broadcast.value);
 
     //setup network environment
-    console.log(strresolver);
+    console.log(`test: ${strbeginrange}`);
     setnameserver(strresolver);
     setnat();
     setstaticip(strlocalip, strbroadcast);
