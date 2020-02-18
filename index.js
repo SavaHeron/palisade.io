@@ -190,9 +190,9 @@ async function start() {
 
     //setup network environment
     console.log(`test: ${strbeginrange.replace(/['"]+/g, '')}`);
-    setnameserver(strresolver);
+    setnameserver(strresolver.replace(/['"]+/g, ''));
     setnat();
-    setstaticip(strlocalip, strbroadcast);
+    setstaticip(strlocalip.replace(/['"]+/g, ''), strbroadcast.replace(/['"]+/g, ''));
 
     //define DNS, DHCP and web servers
     const dns = new DNSServer(dbuser, dbpassword, strlocalip.replace(/['"]+/g, ''), strresolver.replace(/['"]+/g, ''), strapikey.replace(/['"]+/g, ''));
