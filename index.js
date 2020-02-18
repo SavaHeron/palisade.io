@@ -15,7 +15,7 @@ const fs = require(`fs`);
 const mariadb = require(`mariadb`);
 const DNSServer = require(`./dns`);
 const DHCPServer = require(`./dhcp`);
-//const admin = require(`./admin`);
+const Admin = require(`./admin`);
 
 const dbuser = `root`;
 const dbpassword = `9a_?KedofR-qewo`;
@@ -196,7 +196,7 @@ async function start() {
     //define DNS, DHCP and web servers
     const dns = new DNSServer(dbuser, dbpassword, strlocalip.replace(/['"]+/g, ''), strresolver.replace(/['"]+/g, ''), strapikey.replace(/['"]+/g, ''));
     const dhcp = new DHCPServer(strbeginrange.replace(/['"]+/g, ''), strendrange.replace(/['"]+/g, ''), strnetmask.replace(/['"]+/g, ''), strlocalip.replace(/['"]+/g, ''));
-    const admin = new Admin(strlocalip.replace(/['"]+/g, ''));
+    const admin = new Admin(strlocalip.replace(/['"]+/g, ''), dbuser, dbpassword);
 
     //start DNS, DHCP and web servers
     dns.startserver();
