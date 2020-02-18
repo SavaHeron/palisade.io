@@ -189,9 +189,9 @@ async function start() {
     const strbroadcast = JSON.stringify(Object.values(broadcast.value))
 
     //setup network environment
-    setnameserver(resolver);
+    setnameserver(strresolver);
     setnat();
-    setstaticip(localip, broadcast);
+    setstaticip(strlocalip, strbroadcast);
 
     //define DNS, DHCP and web servers
     const dns = new DNSServer(dbuser, dbpassword, strlocalip, strresolver, strapikey);
