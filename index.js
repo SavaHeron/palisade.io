@@ -191,7 +191,7 @@ async function start() {
     //const admin = new admin(localip);
 
     //start DNS, DHCP and web servers
-    console.log(JSON.stringify(netmask[0]));//dns.startserver();
+    console.log(Object.values(JSON.stringify(netmask[0])));//dns.startserver();
     //dhcp.startserver();
     //admin.startserver();
 };
