@@ -181,9 +181,9 @@ async function start() {
     const broadcast = await getbroadcast();
 
     //setup network environment
-    setnameserver(resolver);
-    setnat();
-    setstaticip(localip, broadcast);
+    //setnameserver(resolver);
+    //setnat();
+    //setstaticip(localip, broadcast);
 
     //define DNS, DHCP and web servers
     //const dns = new DNSServer(dbuser, dbpassword, localip, resolver, apikey);
@@ -191,7 +191,7 @@ async function start() {
     //const admin = new admin(localip);
 
     //start DNS, DHCP and web servers
-    console.log(Object.values(JSON.stringify(netmask[0])));//dns.startserver();
+    console.log(JSON.stringify(netmask[0]));//dns.startserver();
     //dhcp.startserver();
     //admin.startserver();
 };
