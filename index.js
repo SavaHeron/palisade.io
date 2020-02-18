@@ -172,7 +172,7 @@ async function setstaticip(localip, broadcast) {
 
 async function start() {
     //get params from database
-    const localip = JSON.stringify(await getlocalip().value);
+    const localip = await getlocalip();
     const resolver = await getresolver();
     const apikey = await getapikey();
     const beginrange = await getbeginrange();
@@ -180,19 +180,27 @@ async function start() {
     const netmask = await getnetmask();
     const broadcast = await getbroadcast();
 
+    const strlocalip = JSON.stringify(Object.values(localip.value))
+    const strresolver = JSON.stringify(Object.values(resolver.value))
+    const strapikey = JSON.stringify(Object.values(apikey.value))
+    const strbeginrange = JSON.stringify(Object.values(beginrange.value))
+    const strendrange = JSON.stringify(Object.values(endrange.value))
+    const strnetmask = JSON.stringify(Object.values(netmask.value))
+    const strbroadcast = JSON.stringify(Object.values(broadcast.value))
+
     //setup network environment
-    //setnameserver(resolver);
-    //setnat();
-    //setstaticip(localip, broadcast);
+    setnameserver(resolver);
+    setnat();
+    setstaticip(localip, broadcast);
 
     //define DNS, DHCP and web servers
-    //const dns = new DNSServer(dbuser, dbpassword, localip, resolver, apikey);
-    //const dhcp = new DHCPServer(beginrange, endrange, netmask, localip);
+    const dns = new DNSServer(dbuser, dbpassword, strlocalip, strresolver, strapikey);
+    const dhcp = new DHCPServer(strbeginrange, strendrange, strnetmask, strlocalip);
     //const admin = new admin(localip);
 
     //start DNS, DHCP and web servers
-    console.log(localip);//dns.startserver();
-    //dhcp.startserver();
+    dns.startserver();
+    dhcp.startserver();
     //admin.startserver();
 };
 
