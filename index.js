@@ -189,14 +189,14 @@ async function start() {
     const strbroadcast = JSON.stringify(broadcast.value);
 
     //setup network environment
-    console.log(`test: ${strbeginrange}`);
+    console.log(`test: ${strbeginrange.replace(/['"]+/g, '')}`);
     setnameserver(strresolver);
     setnat();
     setstaticip(strlocalip, strbroadcast);
 
     //define DNS, DHCP and web servers
-    const dns = new DNSServer(dbuser, dbpassword, strlocalip, strresolver, strapikey);
-    const dhcp = new DHCPServer(strbeginrange, strendrange, strnetmask, strlocalip);
+    const dns = new DNSServer(dbuser, dbpassword, strlocalip.replace(/['"]+/g, ''), strresolver.replace(/['"]+/g, ''), strapikey.replace(/['"]+/g, ''));
+    const dhcp = new DHCPServer(strbeginrange.replace(/['"]+/g, ''), strendrange.replace(/['"]+/g, ''), strnetmask.replace(/['"]+/g, ''), strlocalip.replace(/['"]+/g, ''));
     //const admin = new admin(localip);
 
     //start DNS, DHCP and web servers
