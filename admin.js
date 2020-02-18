@@ -10,7 +10,7 @@ Licence:	CC BY-NC-ND 4.0
 */
 
 const express = require('express');
-//const mariadb = require(`mariadb`);
+const mariadb = require(`mariadb`);
 const app = express();
 
 //app.set('view engine', 'pug');
@@ -19,7 +19,7 @@ app.use(express.static(__dirname + '/public'));
 
 
 class Admin {
-    constructor(localip) {
+    constructor(localip, dbuser, dbpassword) {
         this.localip = localip;
         this.pool = mariadb.createPool({
             host: `localhost`,
@@ -31,7 +31,7 @@ class Admin {
     };
 
     startserver() {
-        app.listen(80, localip);
+        app.listen(80, this.localip);
 
         app.get('/', function (_req, resp) {
             resp.status(200);
