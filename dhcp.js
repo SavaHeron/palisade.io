@@ -11,7 +11,7 @@ Licence:	CC BY-NC-ND 4.0
 
 const dhcpd = require('dhcp');
 
-class Dhcpserver {
+class DHCPserver {
     constructor(beginrange, endrange, netmask, ip) {
         this.server = dhcpd.createServer({
             range: [
@@ -30,4 +30,4 @@ class Dhcpserver {
     };
 };
 
-module.exports = Dhcpserver;
+module.exports = DHCPserver;
