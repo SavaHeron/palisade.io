@@ -180,8 +180,6 @@ async function start() {
     const netmask = await getnetmask();
     const broadcast = await getbroadcast();
 
-    const temp = JSON.stringify(Object.values(netmask))
-
     //setup network environment
     //setnameserver(resolver);
     //setnat();
@@ -193,7 +191,7 @@ async function start() {
     //const admin = new admin(localip);
 
     //start DNS, DHCP and web servers
-    console.log(temp);//dns.startserver();
+    console.log(JSON.stringify(Object.values(netmask.value)));//dns.startserver();
     //dhcp.startserver();
     //admin.startserver();
 };
