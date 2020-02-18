@@ -172,7 +172,7 @@ async function setstaticip(localip, broadcast) {
 
 async function start() {
     //get params from database
-    const localip = await getlocalip();
+    const localip = JSON.stringify(await getlocalip().value);
     const resolver = await getresolver();
     const apikey = await getapikey();
     const beginrange = await getbeginrange();
@@ -191,7 +191,7 @@ async function start() {
     //const admin = new admin(localip);
 
     //start DNS, DHCP and web servers
-    console.log(JSON.stringify(Object.values(netmask.value)));//dns.startserver();
+    console.log(localip);//dns.startserver();
     //dhcp.startserver();
     //admin.startserver();
 };
