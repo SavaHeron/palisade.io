@@ -10,6 +10,7 @@ Licence:	CC BY-NC-ND 4.0
 */
 
 const express = require('express');
+const async = require(`async`);
 const mariadb = require(`mariadb`);
 const cookieParser = require('cookie-parser');
 const app = express();
@@ -37,7 +38,7 @@ class Admin {
         });
     };
 
-    startserver() {
+    async startserver() {
         app.listen(80, this.localip);
 
         /*app.get('/', function (_req, resp) {
@@ -45,13 +46,41 @@ class Admin {
             resp.send(`OK`);
         });*/
 
+        app.get('/public/css/bootstrap.min.css', function (_req, resp) {
+            resp.sendFile('./public/css/bootstrap.min.css', { root: __dirname });
+        });
+
+        app.get('/public/js/jquery.min.js', function (_req, resp) {
+            resp.sendFile('./public/js/jquery.min.js', { root: __dirname });
+        });
+
+        app.get('/public/js/bootstrap.min.js', function (_req, resp) {
+            resp.sendFile('./public/js/bootstrap.min.js', { root: __dirname });
+        });
+
         app.get('/', function (req, resp) {
             try {
                 var cookieSessionID = req.cookies.sessionID;
             } catch (e) {
                 resp.render('login');
-            }
-            ketabmar.query('SELECT * FROM users WHERE sessionID=?', [cookieSessionID], function (err, rows) {
+            };
+
+            try {
+                let connection = await this.pool.getConnection();
+                let rows = await connection.query(`SELECT * FROM cache WHERE domain LIKE "${domain}" AND type LIKE ${type}`);
+                connection.end();
+                return rows[0];
+            } catch (error) {
+                fs.appendFile(`./logs/error.log`, `${error}\n`, (error) => {
+                    if (error) {
+                        return console.error(error);
+                    };
+                });
+                return console.error(error);
+            };
+
+
+            ketabmar.query('SELECT * FROM users WHERE sessionID=?', [cookieSessionID], function (_err, rows) {
                 if (rows.length == 1) {
                     resp.redirect('/admin');
                 } else {
@@ -93,7 +122,7 @@ class Admin {
             });
         });
 
-        app.get('*', function (req, resp) {
+        app.get('*', function (_req, resp) {
             resp.status(404);
             resp.send(`NOT FOUND`);
         });

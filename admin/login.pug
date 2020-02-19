@@ -1,0 +1,23 @@
+doctype html
+head
+  title KETABMaR
+  meta(charset='utf-8')
+  meta(name='viewport' content='width=device-width, initial-scale=1')
+  link(rel='stylesheet' type='text/css' href='/public/css/bootstrap.min.css')
+  link(rel='stylesheet' type='text/css' href='/public/css/login.css')
+  script(type='text/javascript' src='/public/js/jquery.min.js')
+  script(type='text/javascript' src='/public/js/popper.min.js')
+  script(type='text/javascript' src='/public/js/bootstrap.min.js')
+body
+.form-group
+  form.login-form.text-center(action='/' method='POST')
+    input.form-control(type='text' name='username' placeholder='Username')
+    br
+    input.form-control(type='password' name='password' placeholder='Password')
+    br
+    button#load.btn.btn-primary(type='submit' data-loading-text="<i class='fa fa-spinner fa-spin '></i> Logging in") Login
+script.
+  $('.btn').on('click', function() {
+  var $this = $(this);
+  $this.button('loading');
+  });
