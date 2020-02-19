@@ -7,6 +7,6 @@ crypto.pbkdf2(auth, 'zokowrAprIxuhlswUKU6oMAqiho0ichoge4obRaCuT3xachudrehufRAwre
         return console.error(error);
     } else {
         let hashedtoken = derivedKey.toString('hex');
-        return hashedtoken;
+        console.log(hashedtoken);
     };
 });
