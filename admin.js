@@ -17,7 +17,7 @@ var bodyParser = require('body-parser');
 const crypto = require('crypto');
 const app = express();
 
-//app.set('view engine', 'pug');
+app.set('view engine', 'pug');
 app.use(express.static(__dirname + '/public'));
 app.use(cookieParser());
 app.use(bodyParser.json());
