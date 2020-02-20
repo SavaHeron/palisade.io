@@ -42,13 +42,11 @@ class Admin {
 
     startserver() {
         app.listen(80, this.localip);
-        this.runserver
-    };
-    async runserver() {
+
         /*app.get('/', function (_req, resp) {
-                    resp.status(200);
-                    resp.send(`OK`);
-                });*/
+            resp.status(200);
+            resp.send(`OK`);
+        });*/
 
         app.get('/public/css/bootstrap.min.css', function (_req, resp) {
             resp.sendFile('./public/css/bootstrap.min.css', { root: __dirname });
@@ -62,7 +60,7 @@ class Admin {
             resp.sendFile('./public/js/bootstrap.min.js', { root: __dirname });
         });
 
-        app.get('/', function (req, resp) {
+        app.get('/', async function (req, resp) {
             try {
                 var cookieSessionID = req.cookies.sessionID;
             } catch (e) {
@@ -74,7 +72,7 @@ class Admin {
                 connection.end();
                 if (rows[0].length == 1) {
                     resp.status(200);
-                    resp.send(`OK`);
+                            resp.send(`OK`);
                 } else {
                     resp.render('login');
                 };
