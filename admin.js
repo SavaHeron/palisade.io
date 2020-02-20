@@ -32,17 +32,21 @@ app.use(sessions({
 
 class Admin {
     constructor(localip, dbuser, dbpassword) {
+        this.dbuser = dbuser;
+        this.dbpassword = dbpassword;
         this.localip = localip;
-        this.pool = mariadb.createPool({
+    };
+
+    startserver() {
+
+        let pool = mariadb.createPool({
             host: `localhost`,
             user: dbuser,
             password: dbpassword,
             connectionLimit: 5,
             database: `palisadeio`
         });
-    };
 
-    startserver() {
         app.listen(80, this.localip);
 
         /*app.get('/', function (_req, resp) {
@@ -69,7 +73,7 @@ class Admin {
                 resp.render('login');
             };
             try {
-                let connection = await this.pool.getConnection();
+                let connection = await pool.getConnection();
                 let rows = await connection.query(`SELECT * FROM users WHERE sessionID LIKE "${cookieSessionID}"`);
                 connection.end();
                 if (rows[0].length == 1) {
