@@ -49,11 +49,6 @@ class Admin {
 
         app.listen(80, this.localip);
 
-        /*app.get('/', function (_req, resp) {
-            resp.status(200);
-            resp.send(`OK`);
-        });*/
-
         app.get('/public/css/bootstrap.min.css', function (_req, resp) {
             resp.sendFile('./public/css/bootstrap.min.css', { root: __dirname });
         });
