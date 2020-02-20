@@ -117,7 +117,7 @@ class Admin {
                     }
                 });
             });
-        });/*
+        });*/
 
         app.get('*', function (_req, resp) {
             resp.status(404);
