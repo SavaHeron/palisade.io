@@ -94,7 +94,7 @@ class Admin {
             };
         });
 
-        app.post('/', function (req, resp) {
+        app.post('/', async function (req, resp) {
             let username = req.body.username;
             let password = req.body.password;
             crypto.pbkdf2(password, 'zokowrAprIxuhlswUKU6oMAqiho0ichoge4obRaCuT3xachudrehufRAwreprlFe', 100000, 64, 'sha512', (error, derivedKey) => {
