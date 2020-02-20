@@ -69,7 +69,7 @@ class Admin {
         app.get('/', async function (req, resp) {
             try {
                 var cookieSessionID = req.cookies.sessionID;
-            } catch (e) {
+            } catch (error) {
                 resp.render('login');
             };
             try {
@@ -78,52 +78,84 @@ class Admin {
                 connection.end();
                 if (rows.length == 1) {
                     resp.status(200);
-                            resp.send(`OK`);
+                    return resp.send(`OK`);
                 } else {
-                    resp.render('login');
+                    return resp.render('login');
                 };
             } catch (error) {
                 fs.appendFile(`./logs/error.log`, `${error}\n`, (error) => {
                     if (error) {
-                        return console.error(error);
+                        console.error(error);
+                        resp.status(500);
+                        return resp.send(`500`);
                     };
                 });
-                return console.error(error);
+                console.error(error);
+                resp.status(500);
+                return resp.send(`500`);
             };
         });
 
-        /*app.post('/', function (req, resp) {
-            var username = req.body.username;
-            var password = req.body.password;
-            crypto.pbkdf2(password, 'zokowrAprIxuhlswUKU6oMAqiho0ichoge4obRaCuT3xachudrehufRAwreprlFe', 100000, 64, 'sha512', (err, derivedKey) => {
-                if (err) {
+        app.post('/', function (req, resp) {
+            let username = req.body.username;
+            let password = req.body.password;
+            crypto.pbkdf2(password, 'zokowrAprIxuhlswUKU6oMAqiho0ichoge4obRaCuT3xachudrehufRAwreprlFe', 100000, 64, 'sha512', (error, derivedKey) => {
+                if (error) {
+                    fs.appendFile(`./logs/error.log`, `${error}\n`, (error) => {
+                        if (error) {
+                            console.error(error);
+                            resp.status(500);
+                            return resp.send(`500`);
+                        };
+                    });
+                    console.error(error);
                     resp.status(500);
-                    resp.send(`500`);
-                }
-                var hashedPassword = derivedKey.toString('hex');
-                ketabmar.query('SELECT * FROM users WHERE username=? AND password=? LIMIT 1', [username, hashedPassword], function (err, rows) {
-                    if (err) {
-                        resp.status(500);
-                        resp.send(`500`);
-                    }
-                    if (rows.length == 1) {
-                        var sessionID = crypto.randomBytes(64).toString('hex');
-                        resp.cookie('sessionID', sessionID, { expires: new Date(Date.now() + 1800000) });
-                        ketabmar.query('UPDATE users SET sessionID=? where username=?', [sessionID, username], function (err) {
-                            if (err) {
+                    return resp.send(`500`);
+                } else {
+                    let hashedPassword = derivedKey.toString('hex');
+                    try {
+                        let connection = await pool.getConnection();
+                        let rows = await connection.query(`SELECT * FROM users WHERE username LIKE "${username}" AND password LIKE "${hashedPassword}"`);
+                        connection.end();
+                        if (rows.length == 1) {
+                            let sessionID = crypto.randomBytes(64).toString('hex');
+                            resp.cookie('sessionID', sessionID, { expires: new Date(Date.now() + 1800000) });
+                            try {
+                                let connection = await pool.getConnection();
+                                let rows = await connection.query(`UPDATE users SET sessionID = "${sessionID}" WHERE username = "${username}"`);
+                                connection.end();
+                                return rows;
+                            } catch (error) {
+                                fs.appendFile(`./logs/error.log`, `${error}\n`, (error) => {
+                                    if (error) {
+                                        console.error(error);
+                                        resp.status(500);
+                                        return resp.send(`500`);
+                                    };
+                                });
+                                console.error(error);
                                 resp.status(500);
-                                resp.send(`500`);
-                            }
-                            resp.status(200);
-                            resp.send(`OK`);
+                                return resp.send(`500`);
+                            };
+                        } else {
+                            resp.status(401);
+                            resp.send(`UNAUTH`);
+                        };
+                    } catch (error) {
+                        fs.appendFile(`./logs/error.log`, `${error}\n`, (error) => {
+                            if (error) {
+                                console.error(error);
+                                resp.status(500);
+                                return resp.send(`500`);
+                            };
                         });
-                    } else {
-                        resp.status(401);
-                        resp.send(`UNAUTH`);
-                    }
-                });
+                        console.error(error);
+                        resp.status(500);
+                        return resp.send(`500`);
+                    };
+                };
             });
-        });*/
+        });
 
         app.get('*', function (_req, resp) {
             resp.status(404);
