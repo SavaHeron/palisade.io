@@ -13,6 +13,8 @@ const express = require('express');
 const async = require(`async`);
 const mariadb = require(`mariadb`);
 const cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
+const crypto = require('crypto');
 const app = express();
 
 //app.set('view engine', 'pug');
