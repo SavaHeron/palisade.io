@@ -66,12 +66,16 @@ class Admin {
             } catch (e) {
                 resp.render('login');
             };
-
             try {
                 let connection = await this.pool.getConnection();
-                let rows = await connection.query(`SELECT * FROM cache WHERE domain LIKE "${domain}" AND type LIKE ${type}`);
+                let rows = await connection.query(`SELECT * FROM users WHERE sessionID LIKE "${cookieSessionID}"`);
                 connection.end();
-                return rows[0];
+                if (rows[0].length == 1) {
+                    resp.status(200);
+                            resp.send(`OK`);
+                } else {
+                    resp.render('login');
+                };
             } catch (error) {
                 fs.appendFile(`./logs/error.log`, `${error}\n`, (error) => {
                     if (error) {
@@ -80,18 +84,9 @@ class Admin {
                 });
                 return console.error(error);
             };
-
-
-            ketabmar.query('SELECT * FROM users WHERE sessionID=?', [cookieSessionID], function (_err, rows) {
-                if (rows.length == 1) {
-                    resp.redirect('/admin');
-                } else {
-                    resp.render('login');
-                }
-            });
         });
 
-        app.post('/', function (req, resp) {
+        /*app.post('/', function (req, resp) {
             var username = req.body.username;
             var password = req.body.password;
             crypto.pbkdf2(password, 'zokowrAprIxuhlswUKU6oMAqiho0ichoge4obRaCuT3xachudrehufRAwreprlFe', 100000, 64, 'sha512', (err, derivedKey) => {
@@ -122,7 +117,7 @@ class Admin {
                     }
                 });
             });
-        });
+        });/*
 
         app.get('*', function (_req, resp) {
             resp.status(404);
