@@ -10,6 +10,7 @@ Licence:	CC BY-NC-ND 4.0
 */
 
 const express = require('express');
+const fs = require(`fs`);
 const async = require(`async`);
 const mariadb = require(`mariadb`);
 const cookieParser = require('cookie-parser');
