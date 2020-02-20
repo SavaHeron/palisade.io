@@ -66,6 +66,10 @@ class Admin {
             resp.sendFile('./public/js/bootstrap.min.js', { root: __dirname });
         });
 
+        app.get('/public/css/error.css', function (_req, resp) {
+            resp.sendFile('./public/css/error.css', { root: __dirname });
+        });
+
         app.get('/', async function (req, resp) {
             try {
                 var cookieSessionID = req.cookies.sessionID;
@@ -120,6 +124,8 @@ class Admin {
                                 let connection = await pool.getConnection();
                                 let rows = await connection.query(`UPDATE users SET sessionID = "${sessionID}" WHERE username = "${username}"`);
                                 connection.end();
+                                resp.status(200);
+                                resp.send(`OK`);
                                 return rows;
                             } catch (error) {
                                 fs.appendFile(`./logs/error.log`, `${error}\n`, (error) => {
@@ -146,6 +152,18 @@ class Admin {
                     };
                 };
             });
+        });
+
+        app.get('/401', function (_req, resp) {
+            resp.render('401');
+        });
+
+        app.get('/404', function (_req, resp) {
+            resp.render('404');
+        });
+
+        app.get('/500', function (_req, resp) {
+            resp.render('500');
         });
 
         app.get('*', function (_req, resp) {
