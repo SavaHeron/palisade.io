@@ -86,13 +86,11 @@ class Admin {
                 fs.appendFile(`./logs/error.log`, `${error}\n`, (error) => {
                     if (error) {
                         console.error(error);
-                        resp.status(500);
-                        return resp.send(`500`);
+                        return resp.redirect('/500');
                     };
                 });
                 console.error(error);
-                resp.status(500);
-                return resp.send(`500`);
+                return resp.redirect('/500');
             };
         });
 
@@ -104,13 +102,11 @@ class Admin {
                     fs.appendFile(`./logs/error.log`, `${error}\n`, (error) => {
                         if (error) {
                             console.error(error);
-                            resp.status(500);
-                            return resp.send(`500`);
+                            return resp.redirect('/500');
                         };
                     });
                     console.error(error);
-                    resp.status(500);
-                    return resp.send(`500`);
+                    return resp.redirect('/500');
                 } else {
                     let hashedPassword = derivedKey.toString('hex');
                     try {
@@ -129,37 +125,31 @@ class Admin {
                                 fs.appendFile(`./logs/error.log`, `${error}\n`, (error) => {
                                     if (error) {
                                         console.error(error);
-                                        resp.status(500);
-                                        return resp.send(`500`);
+                                        return resp.redirect('/500');
                                     };
                                 });
                                 console.error(error);
-                                resp.status(500);
-                                return resp.send(`500`);
+                                return resp.redirect('/500');
                             };
                         } else {
-                            resp.status(401);
-                            resp.send(`UNAUTH`);
+                            return resp.redirect('/401');
                         };
                     } catch (error) {
                         fs.appendFile(`./logs/error.log`, `${error}\n`, (error) => {
                             if (error) {
                                 console.error(error);
-                                resp.status(500);
-                                return resp.send(`500`);
+                                return resp.redirect('/500');
                             };
                         });
                         console.error(error);
-                        resp.status(500);
-                        return resp.send(`500`);
+                        return resp.redirect('/500');
                     };
                 };
             });
         });
 
         app.get('*', function (_req, resp) {
-            resp.status(404);
-            resp.send(`NOT FOUND`);
+            return resp.redirect('/404');
         });
     };
 };
