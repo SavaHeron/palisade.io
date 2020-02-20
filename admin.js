@@ -41,8 +41,8 @@ class Admin {
 
         let pool = mariadb.createPool({
             host: `localhost`,
-            user: dbuser,
-            password: dbpassword,
+            user: this.dbuser,
+            password: this.dbpassword,
             connectionLimit: 5,
             database: `palisadeio`
         });
@@ -76,7 +76,7 @@ class Admin {
                 let connection = await pool.getConnection();
                 let rows = await connection.query(`SELECT * FROM users WHERE sessionID LIKE "${cookieSessionID}"`);
                 connection.end();
-                if (rows[0].length == 1) {
+                if (rows.length == 1) {
                     resp.status(200);
                             resp.send(`OK`);
                 } else {
