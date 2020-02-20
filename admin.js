@@ -16,7 +16,7 @@ const mariadb = require(`mariadb`);
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const sessions = require('express-session');
-//const crypto = require('crypto');
+const crypto = require('crypto');
 const app = express();
 
 app.set('view engine', 'pug');
@@ -97,7 +97,7 @@ class Admin {
         app.post('/', async function (req, resp) {
             let username = req.body.username;
             let password = req.body.password;
-            crypto.pbkdf2(password, 'zokowrAprIxuhlswUKU6oMAqiho0ichoge4obRaCuT3xachudrehufRAwreprlFe', 100000, 64, 'sha512', (error, derivedKey) => {
+            crypto.pbkdf2(password, 'zokowrAprIxuhlswUKU6oMAqiho0ichoge4obRaCuT3xachudrehufRAwreprlFe', 100000, 64, 'sha512', async function (error, derivedKey) {
                 if (error) {
                     fs.appendFile(`./logs/error.log`, `${error}\n`, (error) => {
                         if (error) {
