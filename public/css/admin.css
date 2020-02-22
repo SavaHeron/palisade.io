@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
+* {
+  font-family: Roboto;
+  background-color: #36393E;
+}
+
+h1 {
+  padding-top: 40px;
+  color: #fff;
+  text-align: center;
+}
+
+.form-group {
+  background-color: #36393E;
+}
+
+form {
+  background-color: #36393E;
+  padding-top: 25px;
+  margin: 0 auto;
+  width:250px;
+}
