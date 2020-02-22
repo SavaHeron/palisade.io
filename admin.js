@@ -161,7 +161,7 @@ class Admin {
                 let rows = await connection.query(`SELECT * FROM users WHERE sessionID LIKE "${cookieSessionID}"`);
                 connection.end();
                 if (rows.length == 1) {
-                    return resp.render(`/admin`);
+                    return resp.render(`./admin`);
                 } else {
                     return resp.render(`/401`);
                 };
@@ -175,8 +175,61 @@ class Admin {
                 console.error(error);
                 return resp.redirect(`/500`);
             };
+        });
 
+        app.post(`/update/:attribute`, async function (req, resp) {
+            var attribute = req.params.attribute;
+            var value = req.body.value;
+            try {
+                var cookieSessionID = req.cookies.sessionID;
+            } catch (e) {
+                resp.redirect(`/401`);
+            };
+            if (value == undefined) {
+                return resp.redirect(`/400`);
+            } else {
+                try {
+                    let connection = await pool.getConnection();
+                    let rows = await connection.query(`SELECT * FROM users WHERE sessionID LIKE "${cookieSessionID}"`);
+                    connection.end();
+                    if (rows.length == 1) {
+                        try {
+                            let connection = await pool.getConnection();
+                            let rows = await connection.query(`UPDATE settings SET value = ${value} WHERE attribute = ${attribute}`);
+                            connection.end();
+                            if (rows.length == 1) {
+                                return resp.render(`./admin`);
+                            } else {
+                                return resp.render(`/401`);
+                            };
+                        } catch (error) {
+                            fs.appendFile(`./logs/error.log`, `${error}\n`, (error) => {
+                                if (error) {
+                                    console.error(error);
+                                    return resp.redirect(`/500`);
+                                };
+                            });
+                            console.error(error);
+                            return resp.redirect(`/500`);
+                        };
+                    } else {
+                        return resp.render(`/401`);
+                    };
+                } catch (error) {
+                    fs.appendFile(`./logs/error.log`, `${error}\n`, (error) => {
+                        if (error) {
+                            console.error(error);
+                            return resp.redirect(`/500`);
+                        };
+                    });
+                    console.error(error);
+                    return resp.redirect(`/500`);
+                };
+            };
+        });
 
+        app.get(`/400`, function (_req, resp) {
+            resp.render(`400`);
         });
 
         app.get(`/401`, function (_req, resp) {
@@ -190,6 +243,7 @@ class Admin {
         app.get(`/500`, function (_req, resp) {
             resp.render(`500`);
         });
+
 
         app.get(`*`, function (_req, resp) {
             return resp.redirect(`/404`);
