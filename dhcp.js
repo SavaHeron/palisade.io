@@ -9,7 +9,7 @@ Copyright:	(c) SMH 2020
 Licence:	CC BY-NC-ND 4.0
 */
 
-const dhcpd = require('dhcp');
+const dhcpd = require(`dhcp`);
 
 class DHCPserver {
     constructor(beginrange, endrange, netmask, ip) {
