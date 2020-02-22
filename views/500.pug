@@ -1,13 +1,13 @@
 doctype html
 head
   title Error 500 - palisade.io
-  meta(charset='utf-8')
-  meta(name='viewport' content='width=device-width, initial-scale=1')
-  link(rel='stylesheet' type='text/css' href='/public/css/bootstrap.min.css')
-  link(rel='stylesheet' type='text/css' href='/public/css/error.css')
-  script(type='text/javascript' src='/public/js/jquery.min.js')
-  script(type='text/javascript' src='/public/js/popper.min.js')
-  script(type='text/javascript' src='/public/js/bootstrap.min.js')
+  meta(charset=`utf-8`)
+  meta(name=`viewport` content=`width=device-width, initial-scale=1`)
+  link(rel=`stylesheet` type=`text/css` href=`/public/css/bootstrap.min.css`)
+  link(rel=`stylesheet` type=`text/css` href=`/public/css/error.css`)
+  script(type=`text/javascript` src=`/public/js/jquery.min.js`)
+  script(type=`text/javascript` src=`/public/js/popper.min.js`)
+  script(type=`text/javascript` src=`/public/js/bootstrap.min.js`)
 body
 .container
     .error
@@ -41,11 +41,11 @@ script.
       function TextScramble(el) {
           _classCallCheck(this, TextScramble);
           this.el = el;
-          this.chars = '!<>-_\\/[]{}—=+*^?#_ABCDEFGHIJKLMNOPQRSTUVWXYZ@~';
+          this.chars = `!<>-_\\/[]{}—=+*^?#_ABCDEFGHIJKLMNOPQRSTUVWXYZ@~`;
           this.update = this.update.bind(this);
       }
       _createClass(TextScramble, [{
-          key: 'setText',
+          key: `setText`,
           value: function setText(
               newText) {
               var _this = this;
@@ -56,8 +56,8 @@ script.
               });
               this.queue = [];
               for (var i = 0; i < length; i++) {
-                  var from = oldText[i] || '';
-                  var to = newText[i] || '';
+                  var from = oldText[i] || ``;
+                  var to = newText[i] || ``;
                   var start = Math.floor(Math.random() * 80);
                   var end = start + Math.floor(Math.random() * 80);
                   this.queue.push({
@@ -73,9 +73,9 @@ script.
               return promise;
           }
       }, {
-          key: 'update',
+          key: `update`,
           value: function update() {
-              var output = '';
+              var output = ``;
               var complete = 0;
               for (var i = 0, n = this.queue.length; i < n; i++) {
                   var _queue$i =
@@ -93,7 +93,7 @@ script.
                           char = this.randomChar();
                           this.queue[i].char = char;
                       }
-                      output += '<span class="dud">' + char + '</span>';
+                      output += `<span class="dud">` + char + `</span>`;
                   } else {
                       output += from;
                   }
@@ -107,7 +107,7 @@ script.
               }
           }
       }, {
-          key: 'randomChar',
+          key: `randomChar`,
           value: function randomChar() {
               return this.chars[Math.floor(Math.random() * this.chars.length)];
           }
@@ -116,11 +116,11 @@ script.
   }();
 
   var phrases = [
-      'Error 500',
-      'Internal Server Error'
+      `Error 500`,
+      `Internal Server Error`
   ];
 
-  var el = document.querySelector('.errorMessage');
+  var el = document.querySelector(`.errorMessage`);
   var fx = new TextScramble(el);
 
   var counter = 0;
