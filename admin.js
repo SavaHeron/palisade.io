@@ -72,14 +72,13 @@ class Admin {
             try {
                 var cookieSessionID = req.cookies.sessionID;
             } catch (error) {
-                resp.render('login');
+                return resp.render('login');
             };
             try {
                 let connection = await pool.getConnection();
                 let rows = await connection.query(`SELECT * FROM users WHERE sessionID LIKE "${cookieSessionID}"`);
                 connection.end();
                 if (rows.length == 1) {
-                    resp.status(200);
                     return resp.send(`OK`);
                 } else {
                     return resp.render('login');
@@ -122,8 +121,7 @@ class Admin {
                                 let connection = await pool.getConnection();
                                 let rows = await connection.query(`UPDATE users SET sessionID = "${sessionID}" WHERE username = "${username}"`);
                                 connection.end();
-                                resp.status(200);
-                                resp.send(`OK`);
+                                resp.redirect(`/admin`);
                                 return rows;
                             } catch (error) {
                                 fs.appendFile(`./logs/error.log`, `${error}\n`, (error) => {
@@ -150,6 +148,35 @@ class Admin {
                     };
                 };
             });
+        });
+
+        app.get('/admin', function (req, resp) {
+            try {
+                var cookieSessionID = req.cookies.sessionID;
+            } catch (e) {
+                return resp.redirect('/401');
+            };
+            try {
+                let connection = await pool.getConnection();
+                let rows = await connection.query(`SELECT * FROM users WHERE sessionID LIKE "${cookieSessionID}"`);
+                connection.end();
+                if (rows.length == 1) {
+                    return resp.render('/admin');
+                } else {
+                    return resp.render('/401');
+                };
+            } catch (error) {
+                fs.appendFile(`./logs/error.log`, `${error}\n`, (error) => {
+                    if (error) {
+                        console.error(error);
+                        return resp.redirect('/500');
+                    };
+                });
+                console.error(error);
+                return resp.redirect('/500');
+            };
+
+
         });
 
         app.get('/401', function (_req, resp) {
