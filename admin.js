@@ -162,9 +162,9 @@ class Admin {
                 connection.end();
                 console.log(rows);
                 if (rows.length == 1) {
-                    return resp.render(`./admin`);
+                    return resp.redirect(`/admin`);
                 } else {
-                    return resp.render(`/401`);
+                    return resp.redirect(`/401`);
                 };
             } catch (error) {
                 fs.appendFile(`./logs/error.log`, `${error}\n`, (error) => {
@@ -200,8 +200,6 @@ class Admin {
                             connection.end();
                             if (rows.length == 1) {
                                 return resp.redirect(`/admin`);
-                            } else {
-                                return resp.redirect(`/401`);
                             };
                         } catch (error) {
                             fs.appendFile(`./logs/error.log`, `${error}\n`, (error) => {
