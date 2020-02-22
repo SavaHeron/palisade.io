@@ -160,7 +160,6 @@ class Admin {
                 let connection = await pool.getConnection();
                 let rows = await connection.query(`SELECT * FROM users WHERE sessionID LIKE "${cookieSessionID}"`);
                 connection.end();
-                console.log(rows);
                 if (rows.length == 1) {
                     return resp.redirect(`/admin`);
                 } else {
