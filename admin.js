@@ -64,6 +64,10 @@ class Admin {
             resp.sendFile(`./public/css/login.css`, { root: __dirname });
         });
 
+        app.get(`/public/css/admin.css`, function (_req, resp) {
+            resp.sendFile(`./public/css/admin.css`, { root: __dirname });
+        });
+
         app.get(`/public/css/error.css`, function (_req, resp) {
             resp.sendFile(`./public/css/error.css`, { root: __dirname });
         });
