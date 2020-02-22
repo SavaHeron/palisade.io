@@ -161,7 +161,7 @@ class Admin {
                 let rows = await connection.query(`SELECT * FROM users WHERE sessionID LIKE "${cookieSessionID}"`);
                 connection.end();
                 if (rows.length == 1) {
-                    return resp.redirect(`/admin`);
+                    return resp.render(`./admin`);
                 } else {
                     return resp.redirect(`/401`);
                 };
