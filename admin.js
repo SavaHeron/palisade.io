@@ -19,6 +19,8 @@ const sessions = require(`express-session`);
 const crypto = require(`crypto`);
 const app = express();
 
+const ipregex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/g;
+
 app.set(`view engine`, `pug`);
 app.use(express.static(__dirname + `/public`));
 app.use(cookieParser());
@@ -191,6 +193,8 @@ class Admin {
             };
             if (typeof value == `undefined`) {
                 return resp.redirect(`/400`);
+            } else if (attribute.match(ipregex) == null) {
+                return resp.redirect(`/400`);
             } else {
                 try {
                     let connection = await pool.getConnection();
@@ -202,7 +206,7 @@ class Admin {
                             let rows = await connection.query(`UPDATE settings SET value = "${value}" WHERE attribute = "${attribute}"`);
                             connection.end();
                             if (rows.length == 1) {
-                                return resp.redirect(`/admin`);
+                                return resp.render(`./admin`);
                             };
                         } catch (error) {
                             fs.appendFile(`./logs/error.log`, `${error}\n`, (error) => {
@@ -245,7 +249,6 @@ class Admin {
         app.get(`/500`, function (_req, resp) {
             resp.render(`500`);
         });
-
 
         app.get(`*`, function (_req, resp) {
             return resp.redirect(`/404`);
