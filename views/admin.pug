@@ -50,14 +50,6 @@ h1 DHCP Server Broadcast Address
       form.login-form.text-center(action=`/update/broadcast` method=`POST`)
         input.form-control(type=`text` name=`value` placeholder=`Value`)
         button#load.btn.btn-primary(type=`submit` data-loading-text="<i class=`fa fa-spinner fa-spin `></i> Logging in") Submit
-br
-br
-br
-h1 Admin Panel Password
-  .form-group
-      form.login-form.text-center(action=`/updatepassword` method=`POST`)
-        input.form-control(type=`text` name=`value` placeholder=`Value`)
-        button#load.btn.btn-primary(type=`submit` data-loading-text="<i class=`fa fa-spinner fa-spin `></i> Logging in") Submit
 script.
   $(`.btn`).on(`click`, function() {
   var $this = $(this);
