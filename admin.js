@@ -79,7 +79,7 @@ class Admin {
                 let rows = await connection.query(`SELECT * FROM users WHERE sessionID LIKE "${cookieSessionID}"`);
                 connection.end();
                 if (rows.length == 1) {
-                    return resp.send(`OK`);
+                    return resp.redirect(`/admin`);
                 } else {
                     return resp.render(`login`);
                 };
@@ -160,6 +160,7 @@ class Admin {
                 let connection = await pool.getConnection();
                 let rows = await connection.query(`SELECT * FROM users WHERE sessionID LIKE "${cookieSessionID}"`);
                 connection.end();
+                console.log(rows);
                 if (rows.length == 1) {
                     return resp.render(`./admin`);
                 } else {
@@ -185,7 +186,7 @@ class Admin {
             } catch (e) {
                 resp.redirect(`/401`);
             };
-            if (value == undefined) {
+            if (typeof value == `undefined`) {
                 return resp.redirect(`/400`);
             } else {
                 try {
@@ -195,12 +196,12 @@ class Admin {
                     if (rows.length == 1) {
                         try {
                             let connection = await pool.getConnection();
-                            let rows = await connection.query(`UPDATE settings SET value = ${value} WHERE attribute = ${attribute}`);
+                            let rows = await connection.query(`UPDATE settings SET value = "${value}" WHERE attribute = "${attribute}"`);
                             connection.end();
                             if (rows.length == 1) {
-                                return resp.render(`./admin`);
+                                return resp.redirect(`/admin`);
                             } else {
-                                return resp.render(`/401`);
+                                return resp.redirect(`/401`);
                             };
                         } catch (error) {
                             fs.appendFile(`./logs/error.log`, `${error}\n`, (error) => {
