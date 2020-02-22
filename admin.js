@@ -38,7 +38,6 @@ class Admin {
     };
 
     startserver() {
-
         let pool = mariadb.createPool({
             host: `localhost`,
             user: this.dbuser,
@@ -61,7 +60,7 @@ class Admin {
             resp.sendFile('./public/js/bootstrap.min.js', { root: __dirname });
         });
 
-        app.get('/public/css/login.css', function (req, resp) {
+        app.get('/public/css/login.css', function (_req, resp) {
             resp.sendFile('./public/css/login.css', { root: __dirname });
         });
 
