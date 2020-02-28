@@ -193,7 +193,7 @@ class Admin {
             };
             if (typeof value == `undefined`) {
                 return resp.redirect(`/400`);
-            } else if (value.match(ipregex) == null || attribute != `apikey`) {
+            } else if (value.match(ipregex) == null && attribute != `apikey`) {
                 return resp.redirect(`/400`);
             } else {
                 try {
