@@ -7,7 +7,7 @@
     },
     "dependencies": {
         "async": "^3.1.0",
-        "date-and-time": "^0.12.0",
+        "date-and-time": "^0.14.2",
         "dhcp": "^0.2.18",
         "ip": "^1.1.5",
         "mariadb": "^2.1.4",
